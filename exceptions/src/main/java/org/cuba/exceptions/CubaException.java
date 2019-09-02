@@ -1,4 +1,4 @@
-package org.kllbff.cuba.exceptions;
+package org.cuba.exceptions;
 
 public class CubaException extends Exception {
     private static final long serialVersionUID = 3992241928665273762L;
