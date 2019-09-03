@@ -95,6 +95,7 @@
     <packaging>pom</packaging>
     <modules>
     	<module>exceptions</module>
-    	
+
+    	<module>logging</module>
     </modules>
 </project>
