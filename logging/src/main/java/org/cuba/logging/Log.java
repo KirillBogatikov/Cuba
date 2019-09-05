@@ -61,7 +61,6 @@ public class Log {
         if(stream == null) {
             throw new NullPointerException(level + " Print stream is null");
         }
-        stream.println("Cuba Logging Configurator test...");
         if(stream.checkError()) {
             throw new IllegalStateException(level + " Print stream is closed");
         }
