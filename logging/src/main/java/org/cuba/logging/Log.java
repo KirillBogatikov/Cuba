@@ -5,6 +5,8 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Log {
     public static enum Level {
@@ -33,9 +35,7 @@ public class Log {
     
     public static Log defaultLog() {
         if(defaultLog == null) {
-            Configurator conf = new Configurator();
-            conf.info(System.out).warn(System.out).error(System.out).debug(System.out).pattern("%lvl %dat %pid [%tag] %msg");
-            defaultLog = new Log(conf.build(), Log.class.getName());
+            defaultLog = new Log(Configurator.defaultConfigurator().build(), Log.class.getName());
         }
         return defaultLog;
     }
@@ -43,7 +43,7 @@ public class Log {
     private Configuration config;
     private String defaultTag;
     private SimpleDateFormat simpleDateFormat;
-    private boolean mute;
+    private Set<Level> muted;
     
     public Log(Configuration config, String defaultTag) {
         this.config = config;
@@ -54,7 +54,7 @@ public class Log {
             dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
         }
         this.simpleDateFormat = new SimpleDateFormat(dateFormat);
-        this.mute = false;
+        this.muted = new HashSet<>();
     }
     
     private void check(PrintStream stream, Level level) {
@@ -76,7 +76,7 @@ public class Log {
     }
     
     private void log(PrintStream stream, String pattern, Level level, String tag, String message, Throwable t) {
-        if(mute) { return; }
+        if(muted.contains(level)) { return; }
         check(stream, level);
         String value = pattern.replace(PATTERN_PID_PARAM, PID == null ? "<unknown>" : PID.toString())
                               .replace(PATTERN_TAG_PARAM, tag)
@@ -87,6 +87,14 @@ public class Log {
         if(t != null) {
             t.printStackTrace(stream);
         }
+    }
+    
+    public void mute(Level level) {
+        muted.add(level);
+    }
+    
+    public void unmute(Level level) {
+        muted.remove(level);
     }
     
     public void i(String message) {
