@@ -8,6 +8,15 @@ import static org.cuba.logging.Log.Level.WARN;
 import java.io.PrintStream;
 
 public class Configurator {
+    public static final Configurator defaultConfigurator() {
+        Configurator conf = new Configurator();
+        return conf.info(System.out)
+                   .warn(System.out)
+                   .error(System.out)
+                   .debug(System.out)
+                   .pattern("%lvl %dat %pid [%tag] %msg");
+    }
+    
     private ConfigurationImpl conf;
     
     public Configurator() {
