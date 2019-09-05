@@ -34,7 +34,7 @@ public class Log {
     public static Log defaultLog() {
         if(defaultLog == null) {
             Configurator conf = new Configurator();
-            conf.info(System.out).warn(System.out).error(System.out).debug(System.out);
+            conf.info(System.out).warn(System.out).error(System.out).debug(System.out).pattern("%lvl %dat %pid [%tag] %msg");
             defaultLog = new Log(conf.build(), Log.class.getName());
         }
         return defaultLog;
@@ -53,7 +53,7 @@ public class Log {
         if(dateFormat == null) {
             dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
         }
-        this.simpleDateFormat = new SimpleDateFormat(config.dateFormat());
+        this.simpleDateFormat = new SimpleDateFormat(dateFormat);
         this.mute = false;
     }
     
