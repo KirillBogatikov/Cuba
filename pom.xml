@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cuba</groupId>
     <artifactId>cuba</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <repositories>
         <repository>
             <id>kllbff-public-releases</id>
@@ -95,7 +95,6 @@
     <packaging>pom</packaging>
     <modules>
     	<module>exceptions</module>
-
     	<module>logging</module>
     </modules>
 </project>
