@@ -1,8 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.cuba</groupId>
-    <artifactId>cuba</artifactId>
-    <version>1.1.0</version>
+    <parent>
+        <groupId>org.cuba</groupId>
+        <artifactId>cuba</artifactId>
+        <version>1.1.0</version>
+    </parent>
+    <artifactId>io</artifactId>
+    <name>Cuba IO (in/out operations with data, files, streams, etc.)</name>
+    <description></description>
     <repositories>
         <repository>
             <id>kllbff-public-releases</id>
@@ -91,12 +96,15 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.5</version>
+        </dependency>
+        <dependency>
+	        <groupId>org.cuba</groupId>
+	        <artifactId>reflex</artifactId>
+	        <version>${project.version}</version>
+        </dependency>
     </dependencies>
-    <packaging>pom</packaging>
-    <modules>    	
-    	<module>log</module>
-
-    	<module>io</module>
-    	<module>reflex</module>
-    </modules>
 </project>
