@@ -6,14 +6,14 @@ import java.util.Date;
 import java.util.Locale;
 
 public class LogPrintStream extends LogStream {
-    public static final String PATTERN_PID_PARAM           = "%pid";
-    public static final String PATTERN_TAG_PARAM           = "%tag";
-    public static final String PATTERN_LEVEL_PARAM         = "%lvl";
-    public static final String PATTERN_TIME_PARAM          = "%tim";
-    public static final String PATTERN_MESSAGE_PARAM       = "%msg";
-    public static final String PATTERN_DATA_PARAM          = "%dat";
-    public static final String PATTERN_CALLER_CLASS_PARAM  = "%cls";
-    public static final String PATTERN_CALLER_METHOD_PARAM = "%mtd";
+    public static final String PATTERN_PID_PARAM           = "%_pid";
+    public static final String PATTERN_TAG_PARAM           = "%_tag";
+    public static final String PATTERN_LEVEL_PARAM         = "%_lvl";
+    public static final String PATTERN_TIME_PARAM          = "%_tim";
+    public static final String PATTERN_MESSAGE_PARAM       = "%_msg";
+    public static final String PATTERN_DATA_PARAM          = "%_dat";
+    public static final String PATTERN_CALLER_CLASS_PARAM  = "%_cls";
+    public static final String PATTERN_CALLER_METHOD_PARAM = "%_mtd";
     
     private PrintStream target;
     private String pattern;
@@ -25,7 +25,7 @@ public class LogPrintStream extends LogStream {
         }
         
         this.target = target;
-        this.pattern = "%lvl %tim %pid [%tag]: %msg%dat";
+        this.pattern = "%_lvl %_tim %_pid [%_tag]: %_msg%_dat";
         setTimeFormat("yyyy-MM-dd HH:mm:ss.SSS");
         
         if(target.checkError()) {
@@ -58,8 +58,10 @@ public class LogPrintStream extends LogStream {
         
         if(record.getError() != null) {
             record.getError().printStackTrace(target);
-        } else {
+        } else if(record.getData() != null) {
             value = value.replaceAll(PATTERN_DATA_PARAM, "\n" + String.valueOf(record.getData()));    
+        } else {
+            value = value.replaceAll(PATTERN_DATA_PARAM, "");
         }
         
         value = value.replaceAll(PATTERN_TIME_PARAM, timeFormat.format(new Date(record.getTime())));  

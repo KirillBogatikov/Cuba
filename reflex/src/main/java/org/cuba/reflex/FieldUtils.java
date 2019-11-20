@@ -18,16 +18,12 @@ public class FieldUtils {
      * @param <E> value received from field
      * @return value of specified field from instance object
      * 
-     * @throws FieldAccessException if failed to access to field
+     * @throws ReflexException if failed to access to field
      * @throws NullPointerException if field name is null
-     * @throws NullPointerException if instance is null
      */
     public static <T, E> E getValue(String fieldName, T instance) {
         if(fieldName == null) {
             throw new NullPointerException("Field name is null");
-        }
-        if(instance == null) {
-            throw new NullPointerException("Instance is null");
         }
         
         try {
@@ -46,7 +42,8 @@ public class FieldUtils {
      * @param <E> value received from field
      * @return value of specified field from instance object
      * 
-     * @throws FieldAccessException if failed to access to field
+     * @throws ReflexException if failed to access to field
+     * @throws NullPointerException if field is null
      */
     @SuppressWarnings("unchecked")
     public static <T, E> E getValue(Field field, T instance) {
@@ -80,15 +77,11 @@ public class FieldUtils {
      * @param value new value for field
      * 
      * @throws NullPointerException if field name is null
-     * @throws NullPointerException if instance is null
-     * @throws FieldAccessException if failed to get access to field
+     * @throws ReflexException if failed to get access to field
      */
     public static <T> void setValue(String fieldName, T instance, Object value) {
         if(fieldName == null) {
             throw new NullPointerException("Field name is null");
-        }
-        if(instance == null) {
-            throw new NullPointerException("Instance is null");
         }
         
         try {
@@ -107,7 +100,7 @@ public class FieldUtils {
      * @param value new value for field
      * 
      * @throws NullPointerException if field is null
-     * @throws FieldAccessException if failed to get access to field 
+     * @throws ReflexException if failed to get access to field 
      */
     public static <T> void setValue(Field field, T instance, Object value) {
         if(field == null) {
