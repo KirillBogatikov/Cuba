@@ -103,5 +103,6 @@
 
     	<module>io</module>
     	<module>reflex</module>
+    	<module>sql</module>
     </modules>
 </project>
