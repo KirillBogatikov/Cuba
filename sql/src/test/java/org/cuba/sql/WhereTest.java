@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 public class WhereTest {
     
-    @Test(timeout = 30L)
+    @Test(timeout = 15L)
     public void testLike() {
         Where<Expression> where = new Where<Expression>();
         where.column("A").like().value("'hello'");        
@@ -70,7 +70,7 @@ public class WhereTest {
         assertEquals("where (a<=777) and (b>='hello')", where.build().toString().toLowerCase());
     }
     
-    @Test(timeout = 30L)
+    @Test(timeout = 20L)
     public void testOr() {
         Where<Expression> where = new Where<Expression>();
         where.column("A").lessOrEquals().value(777).or()
@@ -87,7 +87,7 @@ public class WhereTest {
         assertEquals("where (columna=777) and (columnb<'hello') or (columnc like 'lolkek')", where.build().toString().toLowerCase());
     }
     
-    @Test(timeout = 30L)
+    @Test(timeout = 40L)
     public void testNested() {
         Where<Expression> where = new Where<Expression>();
         where.column("a").equals().value(1).and()
