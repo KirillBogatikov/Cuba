@@ -36,12 +36,7 @@ public class Insert implements Expression {
 
     @Override
     public CharSequence build() {
-        if(table == null) {
-            throw new IllegalStateException("Table name should be specified");
-        }
-        if(values.isEmpty()) {
-            throw new IllegalStateException("No values for inserting");
-        }
+        SqlUtils.checkWriteExpression(table, values);
         
         StringBuilder builder = new StringBuilder("INSERT INTO ");
         builder.append(table).append(" (");

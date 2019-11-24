@@ -39,10 +39,7 @@ public class Update implements Expression {
 
     @Override
     public CharSequence build() {
-        SqlUtils.checkTableName(table);
-        if(values.isEmpty()) {
-            throw new IllegalStateException("No values to set");
-        }
+        SqlUtils.checkWriteExpression(table, values);
         
         StringBuilder builder = new StringBuilder("UPDATE ");
         builder.append(table)
