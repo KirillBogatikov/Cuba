@@ -1,5 +1,6 @@
 package org.cuba;
 
+import org.cuba.sql.ConditionTest;
 import org.cuba.sql.DeleteTest;
 import org.cuba.sql.InsertTest;
 import org.cuba.sql.UpdateTest;
@@ -10,7 +11,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ SqlUtilsTest.class, WhereTest.class, UpdateTest.class, InsertTest.class, DeleteTest.class })
+@SuiteClasses({ SqlUtilsTest.class, ConditionTest.class, WhereTest.class, UpdateTest.class, InsertTest.class, DeleteTest.class })
 public class FullTest {
     
 }

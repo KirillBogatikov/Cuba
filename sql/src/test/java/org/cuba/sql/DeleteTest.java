@@ -45,6 +45,6 @@ public class DeleteTest {
               .column("a").equals().value(11).and()
               .column("b").less().value(12);
         
-        assertEquals("delete from table where (a=11) and (b<12)", delete.build().toString().toLowerCase());
+        assertEquals("delete from table where a=11 and b<12", delete.build().toString().toLowerCase());
     }
 }

@@ -28,7 +28,7 @@ public class UpdateTest {
               .where().column("c").equals().value(13).end()
               .build();
         
-        assertEquals("update mytable set a=11 where (c=13)", update.build().toString().toLowerCase());
+        assertEquals("update mytable set a=11 where c=13", update.build().toString().toLowerCase());
     }
     
     @Test(timeout = 35L)
@@ -39,7 +39,7 @@ public class UpdateTest {
               .where().column("c").equals().value(13).end()
               .build();
         
-        assertEquals("update mytable set a=11, b=12, c='kek' where (c=13)", update.build().toString().toLowerCase());
+        assertEquals("update mytable set a=11, b=12, c='kek' where c=13", update.build().toString().toLowerCase());
     }
     
     @Test(timeout = 35L, expected = NullPointerException.class)

@@ -38,28 +38,28 @@ public class WhereTest {
     public void testLike() {
         Where<Expression> where = new Where<Expression>();
         where.column("A").like().value("'hello'");        
-        assertEquals("where (a like 'hello')", where.build().toString().toLowerCase());
+        assertEquals("where a like 'hello'", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 15L)
     public void testEquals() {
         Where<Expression> where = new Where<Expression>();
         where.column("A").equals().value("B");        
-        assertEquals("where (a=b)", where.build().toString().toLowerCase());
+        assertEquals("where a=b", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 15L)
     public void testMore() {
         Where<Expression> where = new Where<Expression>();
         where.column("A").more().value(11);        
-        assertEquals("where (a>11)", where.build().toString().toLowerCase());
+        assertEquals("where a>11", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 15L)
     public void testLess() {
         Where<Expression> where = new Where<Expression>();
         where.column("A").less().value(11);        
-        assertEquals("where (a<11)", where.build().toString().toLowerCase());
+        assertEquals("where a<11", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 15L)
@@ -73,21 +73,21 @@ public class WhereTest {
     public void testIn() {
         Where<Expression> where = new Where<Expression>();
         where.column("A").in(11, 50, 43, "'CC'", true);        
-        assertEquals("where (a in (11, 50, 43, 'cc', true))", where.build().toString().toLowerCase());
+        assertEquals("where a in (11, 50, 43, 'cc', true)", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 15L)
     public void testMoreOrEquals() {
         Where<Expression> where = new Where<Expression>();
         where.column("A").moreOrEquals().value(343);        
-        assertEquals("where (a>=343)", where.build().toString().toLowerCase());
+        assertEquals("where a>=343", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 15L)
     public void testLessOrEquals() {
         Where<Expression> where = new Where<Expression>();
         where.column("A").lessOrEquals().value(343);        
-        assertEquals("where (a<=343)", where.build().toString().toLowerCase());
+        assertEquals("where a<=343", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 15L)
@@ -101,22 +101,21 @@ public class WhereTest {
     public void testColumnAndColumn() {
         Where<Expression> where = new Where<Expression>();
         where.column("mycolumn").equals().column("other");        
-        assertEquals("where (mycolumn=other)", where.build().toString().toLowerCase());
+        assertEquals("where mycolumn=other", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 15L)
     public void testColumnAndColumnByValue() {
         Where<Expression> where = new Where<Expression>();
         where.column("mycolumn").equals().value("other");        
-        assertEquals("where (mycolumn=other)", where.build().toString().toLowerCase());
+        assertEquals("where mycolumn=other", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 30L)
     public void testAnd() {
         Where<Expression> where = new Where<Expression>();
-        where.column("A").lessOrEquals().value(777).and()
-             .column("B").moreOrEquals().value("'hello'");        
-        assertEquals("where (a<=777) and (b>='hello')", where.build().toString().toLowerCase());
+        where.column("A").lessOrEquals().value(777).and().column("B").moreOrEquals().value("'hello'");        
+        assertEquals("where a<=777 and b>='hello'", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 20L)
@@ -124,7 +123,7 @@ public class WhereTest {
         Where<Expression> where = new Where<Expression>();
         where.column("A").lessOrEquals().value(777).or()
              .column("B").moreOrEquals().value("'hello'");        
-        assertEquals("where (a<=777) or (b>='hello')", where.build().toString().toLowerCase());
+        assertEquals("where a<=777 or b>='hello'", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 30L)
@@ -133,7 +132,7 @@ public class WhereTest {
         where.column("columnA").equals().value(777).and()
              .column("columnB").less().value("'hello'").or()
              .column("columnC").like().value("'lolkek'");        
-        assertEquals("where (columna=777) and (columnb<'hello') or (columnc like 'lolkek')", where.build().toString().toLowerCase());
+        assertEquals("where columna=777 and columnb<'hello' or columnc like 'lolkek'", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 40L)
@@ -146,7 +145,7 @@ public class WhereTest {
              .end().or()
              .column("d").like().value(4);
                      
-        assertEquals("where (a=1) and ((b<2) or (c>3)) or (d like 4)", where.build().toString().toLowerCase());
+        assertEquals("where a=1 and (b<2 or c>3) or d like 4", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 15L, expected = NullPointerException.class)
@@ -198,45 +197,15 @@ public class WhereTest {
     }
     
     @Test(timeout = 40L, expected = IllegalStateException.class)
-    public void testOperationBeforeColumn() {
-        Where<Expression> where = new Where<Expression>();
-        where.equals();
-    }
-    
-    @Test(timeout = 40L, expected = IllegalStateException.class)
     public void testOperationAfterOperation() {
         Where<Expression> where = new Where<Expression>();
         where.column("column").equals().equals();
     }
     
     @Test(timeout = 40L, expected = IllegalStateException.class)
-    public void testOperationAfterValue() {
-        Where<Expression> where = new Where<Expression>();
-        where.column("column").equals().value(11).less();
-    }
-    
-    @Test(timeout = 40L, expected = IllegalStateException.class)
-    public void testOperationAfterColumn() {
-        Where<Expression> where = new Where<Expression>();
-        where.column("column").equals().column("other").less();
-    }
-    
-    @Test(timeout = 40L, expected = IllegalStateException.class)
-    public void testValueFirst() {
-        Where<Expression> where = new Where<Expression>();
-        where.value(11);
-    }
-    
-    @Test(timeout = 40L, expected = IllegalStateException.class)
     public void testValueAfterColumn() {
         Where<Expression> where = new Where<Expression>();
         where.column("column").value(11);
-    }
-    
-    @Test(timeout = 40L, expected = IllegalStateException.class)
-    public void testValueAfterValue() {
-        Where<Expression> where = new Where<Expression>();
-        where.column("column").equals().value(11).value(12);
     }
     
     @Test(timeout = 15L)
@@ -247,7 +216,7 @@ public class WhereTest {
              .column("double").equals().value(1.45).and()
              .column("float").equals().value(132.77f);             
         
-        assertEquals("where (integer=11) and (long<8888882828282832) and (double=1.45) and (float=132.77)",
+        assertEquals("where integer=11 and long<8888882828282832 and double=1.45 and float=132.77",
                      where.build().toString().toLowerCase());
     }
 
@@ -263,7 +232,7 @@ public class WhereTest {
                  }
              });
 
-        assertEquals("where (string='text') and (boolean=true) and (object=test-object[111])",
+        assertEquals("where string='text' and boolean=true and object=test-object[111]",
                      where.build().toString().toLowerCase());
     }
 
@@ -272,6 +241,6 @@ public class WhereTest {
         Where<Expression> where = new Where<Expression>();
         where.column("test").equals().value(null);
 
-        assertEquals("where (test=null)", where.build().toString().toLowerCase());
+        assertEquals("where test=null", where.build().toString().toLowerCase());
     }
 }
