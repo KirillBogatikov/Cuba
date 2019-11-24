@@ -24,19 +24,15 @@ public class Where<E extends Expression> implements Expression {
         SqlUtils.checkColumnName(name);
         
         if(item == null) {
-            if(items.size() > 0) {
-                Item last = items.get(items.size() - 1);
-                if(last.link == null) {
-                    throw new IllegalStateException("Link AND/OR must be specified");
-                }
-            }
-            
             item = new Item();
             item.first = name;
         } else if(item.operation != null && item.second == null) {
             item.second = name;
-            commit();
         } else {
+            if(item.first != null && item.operation != null && item.second != null && item.link == null) {
+                throw new IllegalStateException("Link AND/OR must be specified");
+            }
+            
             throw new IllegalStateException("Column already specified");
         }
         
