@@ -1,6 +1,6 @@
 package org.cuba.sql;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -12,7 +12,7 @@ public class Insert implements Expression {
     private Map<String, String> values;
     
     public Insert() {
-        values = new HashMap<>();
+        values = new LinkedHashMap<>();
     }
     
     public Insert into(String table) {
@@ -36,6 +36,13 @@ public class Insert implements Expression {
 
     @Override
     public CharSequence build() {
+        if(table == null) {
+            throw new IllegalStateException("Table name should be specified");
+        }
+        if(values.isEmpty()) {
+            throw new IllegalStateException("No values for inserting");
+        }
+        
         StringBuilder builder = new StringBuilder("INSERT INTO ");
         builder.append(table).append(" (");
         

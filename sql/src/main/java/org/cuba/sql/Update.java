@@ -1,6 +1,6 @@
 package org.cuba.sql;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -14,7 +14,7 @@ public class Update implements Expression {
 
     public Update() {
         where = new Where<>(this);
-        values = new HashMap<>();
+        values = new LinkedHashMap<>();
     }
     
     public Update table(String table) {
