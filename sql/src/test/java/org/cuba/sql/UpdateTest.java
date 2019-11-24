@@ -39,6 +39,12 @@ public class UpdateTest {
         Update update = new Update();
         update.table("");
     }
+
+    @Test(timeout = 15L, expected = IllegalArgumentException.class)
+    public void testTableIncorrect() {
+        Update update = new Update();
+        update.table("1table");
+    }
     
     @Test(timeout = 35L, expected = NullPointerException.class)
     public void testColumnNull() {
@@ -50,5 +56,11 @@ public class UpdateTest {
     public void testColumnEmpty() {
         Update update = new Update();
         update.set("", 12);
+    }
+
+    @Test(timeout = 15L, expected = IllegalArgumentException.class)
+    public void testColumnIncorrect() {
+        Update update = new Update();
+        update.table("1column");
     }
 }
