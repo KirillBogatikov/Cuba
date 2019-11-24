@@ -63,4 +63,43 @@ public class UpdateTest {
         Update update = new Update();
         update.table("1column");
     }
+
+    @Test(timeout = 30L)
+    public void testValueNumber() {
+        Update update = new Update();
+        update.table("my")
+              .set("integer", 11)
+              .set("double", 33.882)
+              .set("float", 11.34556f)
+              .set("long", 111111111111111111L);
+
+        assertEquals("update my set integer=11, double=33.882, float=11.34556, long=111111111111111111",
+                     update.build().toString().toLowerCase());
+    }
+
+
+    @Test(timeout = 30L)
+    public void testValueObjects() {
+        Update update = new Update();
+        update.table("my")
+              .set("string", "'text'")
+              .set("boolean", true)
+              .set("object", new Object() {
+                  @Override
+                  public String toString() {
+                      return "tostringcall-@4";
+                  }
+              });
+
+        assertEquals("update my set string='text', boolean=true, object=tostringcall-@4",
+                     update.build().toString().toLowerCase());
+    }
+
+    @Test(timeout = 15L)
+    public void testValueNull() {
+        Update update = new Update();
+        update.table("my").set("test", null);
+
+        assertEquals("update my set test=null", update.build().toString().toLowerCase());
+    }
 }
