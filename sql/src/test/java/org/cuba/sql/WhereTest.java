@@ -76,6 +76,13 @@ public class WhereTest {
         assertEquals("where (mycolumn=other)", where.build().toString().toLowerCase());
     }
     
+    @Test(timeout = 15L)
+    public void testColumnAndColumnByValue() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("mycolumn").equals().value("other");        
+        assertEquals("where (mycolumn=other)", where.build().toString().toLowerCase());
+    }
+    
     @Test(timeout = 30L)
     public void testAnd() {
         Where<Expression> where = new Where<Expression>();
@@ -112,6 +119,30 @@ public class WhereTest {
              .column("d").like().value(4);
                      
         assertEquals("where (a=1) and ((b<2) or (c>3)) or (d like 4)", where.build().toString().toLowerCase());
+    }
+    
+    @Test(timeout = 15L, expected = NullPointerException.class)
+    public void testColumnNull() {
+        Where<Expression> where = new Where<Expression>();
+        where.column(null);
+    }
+    
+    @Test(timeout = 15L, expected = IllegalArgumentException.class)
+    public void testColumnEmpty() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("");
+    }
+    
+    @Test(timeout = 15L, expected = NullPointerException.class)
+    public void testOperationNull() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("column").operation(null);
+    }
+    
+    @Test(timeout = 15L, expected = IllegalArgumentException.class)
+    public void testOperationEmpty() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("column").operation("");
     }
     
     @Test(timeout = 40L, expected = IllegalStateException.class)

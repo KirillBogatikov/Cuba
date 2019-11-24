@@ -19,6 +19,13 @@ public class Where<E extends Expression> implements Expression {
     }
     
     public Where<E> column(String name) {
+        if(name == null) {
+            throw new NullPointerException("Column is null");
+        }
+        if(name.isEmpty()) {
+            throw new IllegalArgumentException("Column name is empty");
+        }
+        
         if(item == null) {
             if(items.size() > 0) {
                 Item last = items.get(items.size() - 1);
@@ -99,6 +106,9 @@ public class Where<E extends Expression> implements Expression {
     public Where<E> operation(String operation) {
         if(operation == null) {
             throw new NullPointerException("Operation is null");
+        }
+        if(operation.isEmpty()) {
+            throw new IllegalArgumentException("Operation is empty");
         }
         return op(operation);
     }
