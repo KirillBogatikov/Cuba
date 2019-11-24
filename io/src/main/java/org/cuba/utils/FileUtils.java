@@ -1,4 +1,4 @@
-package org.cuba.io.utils;
+package org.cuba.utils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
