@@ -43,6 +43,16 @@ public class Where<E extends Expression> implements Expression {
         return this;
     }
     
+    public Where<E> not() {
+        checkState();
+        if(item.operation != null) {
+            throw new IllegalStateException("Operation already specified");
+        }
+        
+        item.negative = true;
+        return this;
+    }
+    
     public Where<E> equals() {
         return op("=");
     }
@@ -163,29 +173,34 @@ public class Where<E extends Expression> implements Expression {
             builder.append("WHERE ");
         }
         
-        for(int i = 0; i < items.size() - 1; i++) {
+        for(int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
-            builder.append("(");
-            
-            if(item.where == null) {
-               builder.append(item.first)
-                      .append(item.operation)
-                      .append(item.second);
-            } else {
-                builder.append(item.where.build());
-            }
-            
-            builder.append(") ").append(item.link).append(" ");
+            appendCondition(builder, item, i == items.size() - 1);
         }
-        
-        Item last = items.get(items.size() - 1);
-        builder.append("(")
-               .append(last.first)
-               .append(last.operation)
-               .append(last.second)
-               .append(")");
 
         return builder;
+    }
+    
+    private void appendCondition(StringBuilder builder, Item item, boolean last) {
+        if(item.negative) {
+            builder.append("NOT");
+        }
+        builder.append("(");
+        
+        if(item.where == null) {
+            builder.append(item.first)
+                   .append(item.operation)
+                   .append(item.second);
+        } else {
+            builder.append(item.where.build());
+        }
+        
+        builder.append(") ");
+        if(last) {
+            builder.deleteCharAt(builder.length() - 1);
+        } else {
+            builder.append(item.link).append(" ");
+        }
     }
     
     public Where<Where<E>> begin() {
@@ -218,6 +233,7 @@ public class Where<E extends Expression> implements Expression {
         public String second;
         public String operation;
         public String link;
+        public boolean negative;
         public Where<Where<E>> where;
     }
 }

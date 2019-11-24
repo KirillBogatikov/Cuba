@@ -7,6 +7,34 @@ import static org.junit.Assert.assertEquals;
 public class WhereTest {
     
     @Test(timeout = 15L)
+    public void testNotEquals() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("A").not().equals().value("'hello'");        
+        assertEquals("where not(a='hello')", where.build().toString().toLowerCase());
+    }
+    
+    @Test(timeout = 15L)
+    public void testNotLike() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("A").not().like().value("'hello'");        
+        assertEquals("where not(a like 'hello')", where.build().toString().toLowerCase());
+    }
+    
+    @Test(timeout = 15L)
+    public void testNotBetween() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("A").not().between(10, 15);        
+        assertEquals("where not(a between 10 and 15)", where.build().toString().toLowerCase());
+    }
+        
+    @Test(timeout = 15L)
+    public void testNotIn() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("A").not().in(10, 12, 14, 16, 18, 20);        
+        assertEquals("where not(a in (10, 12, 14, 16, 18, 20))", where.build().toString().toLowerCase());
+    }
+    
+    @Test(timeout = 15L)
     public void testLike() {
         Where<Expression> where = new Where<Expression>();
         where.column("A").like().value("'hello'");        
