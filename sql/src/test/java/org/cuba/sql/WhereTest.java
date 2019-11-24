@@ -243,10 +243,11 @@ public class WhereTest {
     public void testValueNumber() {
         Where<Expression> where = new Where<Expression>();
         where.column("integer").equals().value(11).and()
+             .column("long").less().value(8888882828282832L).and()
              .column("double").equals().value(1.45).and()
              .column("float").equals().value(132.77f);             
         
-        assertEquals("where (integer=11) and (double=1.45) and (float=132.77)",
+        assertEquals("where (integer=11) and (long<8888882828282832) and (double=1.45) and (float=132.77)",
                      where.build().toString().toLowerCase());
     }
 
