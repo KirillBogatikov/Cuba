@@ -24,8 +24,7 @@ public class InsertTest {
     public void testSimple() {
         Insert insert = new Insert();
         insert.into("myTable")
-              .set("a", 11)
-              .build();
+              .set("a", 11);
         
         assertEquals("insert into mytable (a) values (11)", insert.build().toString().toLowerCase());
     }
@@ -36,8 +35,7 @@ public class InsertTest {
         insert.into("myTable")
               .set("a", 11)
               .set("b", 12)
-              .set("c", 13)
-              .build();
+              .set("c", 13);
         
         assertEquals("insert into mytable (a, b, c) values (11, 12, 13)", insert.build().toString().toLowerCase());
     }
