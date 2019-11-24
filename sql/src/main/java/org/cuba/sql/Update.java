@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import org.cuba.utils.SqlUtils;
+
 public class Update implements Expression {
     private String table;
     private Where<Update> where;
@@ -16,27 +18,13 @@ public class Update implements Expression {
     }
     
     public Update table(String table) {
-        if(table == null) {
-            throw new NullPointerException("Table is null");
-        }
-        if(table.isEmpty()) {
-            throw new IllegalArgumentException("Table name is empty");
-        }
-        if(this.table != null) {
-            throw new IllegalStateException("Table already specified");
-        }
-        
+        SqlUtils.checkTableName(table);
         this.table = table;
         return this;
     }
     
     public Update set(String name, Object value) {
-        if(name == null) {
-            throw new NullPointerException("Column name is null");
-        }
-        if(name.isEmpty()) {
-            throw new IllegalArgumentException("Column name is empty");
-        }
+        SqlUtils.checkColumnName(name);
         if(values.containsKey(name)) {
             throw new IllegalStateException("Value for column '" + name + "' already specified");
         }
@@ -51,12 +39,7 @@ public class Update implements Expression {
 
     @Override
     public CharSequence build() {
-        if(table == null) {
-            throw new NullPointerException("Table is null");
-        }
-        if(table.isEmpty()) {
-            throw new IllegalStateException("Table is empty");
-        }
+        SqlUtils.checkTableName(table);
         if(values.isEmpty()) {
             throw new IllegalStateException("No values to set");
         }

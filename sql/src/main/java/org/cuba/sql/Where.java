@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+import org.cuba.utils.SqlUtils;
+
 public class Where<E extends Expression> implements Expression {
     private E parent;
     private Item item;
@@ -19,12 +21,7 @@ public class Where<E extends Expression> implements Expression {
     }
     
     public Where<E> column(String name) {
-        if(name == null) {
-            throw new NullPointerException("Column is null");
-        }
-        if(name.isEmpty()) {
-            throw new IllegalArgumentException("Column name is empty");
-        }
+        SqlUtils.checkColumnName(name);
         
         if(item == null) {
             if(items.size() > 0) {
