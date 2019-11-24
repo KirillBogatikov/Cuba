@@ -16,11 +16,31 @@ public class Update implements Expression {
     }
     
     public Update table(String table) {
+        if(table == null) {
+            throw new NullPointerException("Table is null");
+        }
+        if(table.isEmpty()) {
+            throw new IllegalArgumentException("Table name is empty");
+        }
+        if(this.table != null) {
+            throw new IllegalStateException("Table already specified");
+        }
+        
         this.table = table;
         return this;
     }
     
     public Update set(String name, Object value) {
+        if(name == null) {
+            throw new NullPointerException("Column name is null");
+        }
+        if(name.isEmpty()) {
+            throw new IllegalArgumentException("Column name is empty");
+        }
+        if(values.containsKey(name)) {
+            throw new IllegalStateException("Value for column '" + name + "' already specified");
+        }
+        
         values.put(name, String.valueOf(value));
         return this;
     }
