@@ -41,7 +41,7 @@ public class WhereTest {
         assertEquals("where (a between 11 and 50)", where.build().toString().toLowerCase());
     }
     
-    @Test(timeout = 15L)
+    @Test(timeout = 30L)
     public void testIn() {
         Where<Expression> where = new Where<Expression>();
         where.column("A").in(11, 50, 43, "'CC'", true);        
@@ -60,6 +60,20 @@ public class WhereTest {
         Where<Expression> where = new Where<Expression>();
         where.column("A").lessOrEquals().value(343);        
         assertEquals("where (a<=343)", where.build().toString().toLowerCase());
+    }
+    
+    @Test(timeout = 15L)
+    public void testCustom() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("mycolumn").operation(" custom ").value(12);        
+        assertEquals("where (mycolumn custom 12)", where.build().toString().toLowerCase());
+    }
+    
+    @Test(timeout = 15L)
+    public void testColumnAndColumn() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("mycolumn").equals().column("other");        
+        assertEquals("where (mycolumn=other)", where.build().toString().toLowerCase());
     }
     
     @Test(timeout = 30L)
@@ -98,5 +112,65 @@ public class WhereTest {
              .column("d").like().value(4);
                      
         assertEquals("where (a=1) and ((b<2) or (c>3)) or (d like 4)", where.build().toString().toLowerCase());
+    }
+    
+    @Test(timeout = 40L, expected = IllegalStateException.class)
+    public void testColumnAfterColumn() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("A").column("B");
+    }
+    
+    @Test(timeout = 40L, expected = IllegalStateException.class)
+    public void testColumnAfterValue() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("C").equals().value(11).column("D");
+    }
+    
+    @Test(timeout = 40L, expected = IllegalStateException.class)
+    public void testColumnAfterColumnAndOperation() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("column").equals().column("other").column("D");
+    }
+    
+    @Test(timeout = 40L, expected = IllegalStateException.class)
+    public void testOperationBeforeColumn() {
+        Where<Expression> where = new Where<Expression>();
+        where.equals();
+    }
+    
+    @Test(timeout = 40L, expected = IllegalStateException.class)
+    public void testOperationAfterOperation() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("column").equals().equals();
+    }
+    
+    @Test(timeout = 40L, expected = IllegalStateException.class)
+    public void testOperationAfterValue() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("column").equals().value(11).less();
+    }
+    
+    @Test(timeout = 40L, expected = IllegalStateException.class)
+    public void testOperationAfterColumn() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("column").equals().column("other").less();
+    }
+    
+    @Test(timeout = 40L, expected = IllegalStateException.class)
+    public void testValueFirst() {
+        Where<Expression> where = new Where<Expression>();
+        where.value(11);
+    }
+    
+    @Test(timeout = 40L, expected = IllegalStateException.class)
+    public void testValueAfterColumn() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("column").value(11);
+    }
+    
+    @Test(timeout = 40L, expected = IllegalStateException.class)
+    public void testValueAfterValue() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("column").equals().value(11).value(12);
     }
 }

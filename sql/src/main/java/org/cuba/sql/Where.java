@@ -19,11 +19,23 @@ public class Where<E extends Expression> implements Expression {
     }
     
     public Where<E> column(String name) {
-        if(item != null) {
+        if(item == null) {
+            if(items.size() > 0) {
+                Item last = items.get(items.size() - 1);
+                if(last.link == null) {
+                    throw new IllegalStateException("Link AND/OR must be specified");
+                }
+            }
+            
+            item = new Item();
+            item.first = name;
+        } else if(item.operation != null && item.second == null) {
+            item.second = name;
+            commit();
+        } else {
             throw new IllegalStateException("Column already specified");
         }
-        item = new Item();
-        item.first = name;
+        
         return this;
     }
     
@@ -52,7 +64,15 @@ public class Where<E extends Expression> implements Expression {
     }
     
     public Where<E> between(Object min, Object max) {
+        if(min == null) {
+            throw new NullPointerException("Min is null");
+        }        
+        if(max == null) {
+            throw new NullPointerException("Max is null");
+        }
+        
         op(" BETWEEN ");
+        
         item.second = String.format("%s AND %s", String.valueOf(min), String.valueOf(max));      
         return this;
     }
@@ -85,6 +105,9 @@ public class Where<E extends Expression> implements Expression {
     
     private Where<E> op(String o) {
         checkState();
+        if(item.operation != null) {
+            throw new IllegalStateException("Operation already specified");
+        }
         item.operation = o;
         return this;
     }
@@ -92,6 +115,9 @@ public class Where<E extends Expression> implements Expression {
     public Where<E> value(Object value) {
         checkState();
         
+        if(item.operation == null) {
+            throw new IllegalStateException("Operation does not specified");
+        }
         if(item.second != null) {
             throw new IllegalStateException("Value already specified");
         }
