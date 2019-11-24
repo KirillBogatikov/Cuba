@@ -161,6 +161,12 @@ public class WhereTest {
         where.column("");
     }
     
+    @Test(timeout = 15L, expected = IllegalArgumentException.class)
+    public void testColumnIncorrect() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("1test");
+    }
+    
     @Test(timeout = 15L, expected = NullPointerException.class)
     public void testOperationNull() {
         Where<Expression> where = new Where<Expression>();
@@ -231,5 +237,40 @@ public class WhereTest {
     public void testValueAfterValue() {
         Where<Expression> where = new Where<Expression>();
         where.column("column").equals().value(11).value(12);
+    }
+    
+    @Test(timeout = 15L)
+    public void testValueNumber() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("integer").equals().value(11).and()
+             .column("double").equals().value(1.45).and()
+             .column("float").equals().value(132.77f);             
+        
+        assertEquals("where (integer=11) and (double=1.45) and (float=132.77)",
+                     where.build().toString().toLowerCase());
+    }
+
+    @Test(timeout = 30L)
+    public void testValueObjects() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("string").equals().value("'text'").and()
+             .column("boolean").equals().value(true).and()
+             .column("object").equals().value(new Object() {
+                 @Override
+                 public String toString() {
+                     return "test-object[111]";
+                 }
+             });
+
+        assertEquals("where (string='text') and (boolean=true) and (object=test-object[111])",
+                     where.build().toString().toLowerCase());
+    }
+
+    @Test(timeout = 15L)
+    public void testValueNull() {
+        Where<Expression> where = new Where<Expression>();
+        where.column("test").equals().value(null);
+
+        assertEquals("where (test=null)", where.build().toString().toLowerCase());
     }
 }
