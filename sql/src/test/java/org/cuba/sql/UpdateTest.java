@@ -5,6 +5,20 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class UpdateTest {
+
+    @Test(timeout = 15L, expected = IllegalStateException.class)
+    public void testNoTable() {
+        Update update = new Update();
+        update.set("column", "value");
+        update.build();
+    }
+
+    @Test(timeout = 15L, expected = IllegalStateException.class)
+    public void testNoValues() {
+        Update update = new Update();
+        update.table("my");
+        update.build();
+    }
     
     @Test(timeout = 35L)
     public void testSimple() {
