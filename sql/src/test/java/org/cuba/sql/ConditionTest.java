@@ -118,6 +118,14 @@ public class ConditionTest {
     }
     
     @Test(timeout = 40L, expected = IllegalStateException.class)
+    public void valueAfterValue() {
+        Condition<Expression> condition = new Condition<Expression>(null, "a");
+        condition.equals()
+                 .value("1");
+        condition.value("2");
+    }
+    
+    @Test(timeout = 40L, expected = IllegalStateException.class)
     public void columnBeforeOperation() {
         Condition<Expression> condition = new Condition<Expression>(null, "a");
         condition.column("b");

@@ -7,21 +7,21 @@ import static org.junit.Assert.assertEquals;
 public class UpdateTest {
 
     @Test(timeout = 15L, expected = IllegalStateException.class)
-    public void testNoTable() {
+    public void noTable() {
         Update update = new Update();
         update.set("column", "value");
         update.build();
     }
 
     @Test(timeout = 15L, expected = IllegalStateException.class)
-    public void testNoValues() {
+    public void noValues() {
         Update update = new Update();
         update.table("my");
         update.build();
     }
     
     @Test(timeout = 35L)
-    public void testSimple() {
+    public void simple() {
         Update update = new Update();
         update.table("myTable")
               .set("a", 11)
@@ -32,7 +32,7 @@ public class UpdateTest {
     }
     
     @Test(timeout = 35L)
-    public void testComplex() {
+    public void complex() {
         Update update = new Update();
         update.table("myTable")
               .set("a", 11).set("b", 12).set("c", "'kek'")
@@ -43,43 +43,43 @@ public class UpdateTest {
     }
     
     @Test(timeout = 35L, expected = NullPointerException.class)
-    public void testTableNull() {
+    public void tableNull() {
         Update update = new Update();
         update.table(null);
     }
     
     @Test(timeout = 35L, expected = IllegalArgumentException.class)
-    public void testTableEmpty() {
+    public void tableEmpty() {
         Update update = new Update();
         update.table("");
     }
 
     @Test(timeout = 15L, expected = IllegalArgumentException.class)
-    public void testTableIncorrect() {
+    public void tableIncorrect() {
         Update update = new Update();
         update.table("1table");
     }
     
     @Test(timeout = 35L, expected = NullPointerException.class)
-    public void testColumnNull() {
+    public void columnNull() {
         Update update = new Update();
         update.set(null, 11);
     }
     
     @Test(timeout = 35L, expected = IllegalArgumentException.class)
-    public void testColumnEmpty() {
+    public void columnEmpty() {
         Update update = new Update();
         update.set("", 12);
     }
 
     @Test(timeout = 15L, expected = IllegalArgumentException.class)
-    public void testColumnIncorrect() {
+    public void columnIncorrect() {
         Update update = new Update();
         update.table("1column");
     }
 
     @Test(timeout = 30L)
-    public void testValueNumber() {
+    public void valueNumber() {
         Update update = new Update();
         update.table("my")
               .set("integer", 11)
@@ -93,7 +93,7 @@ public class UpdateTest {
 
 
     @Test(timeout = 30L)
-    public void testValueObjects() {
+    public void valueObjects() {
         Update update = new Update();
         update.table("my")
               .set("string", "'text'")
@@ -110,7 +110,7 @@ public class UpdateTest {
     }
 
     @Test(timeout = 15L)
-    public void testValueNull() {
+    public void valueNull() {
         Update update = new Update();
         update.table("my").set("test", null);
 

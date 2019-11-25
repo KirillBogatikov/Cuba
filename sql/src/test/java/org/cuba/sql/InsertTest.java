@@ -7,21 +7,21 @@ import org.junit.Test;
 public class InsertTest {
 
     @Test(timeout = 15L, expected = IllegalStateException.class)
-    public void testNoTable() {
+    public void noTable() {
         Insert insert = new Insert();
         insert.set("column", "value");
         insert.build();
     }
 
     @Test(timeout = 15L, expected = IllegalStateException.class)
-    public void testNoValues() {
+    public void noValues() {
         Insert insert = new Insert();
         insert.into("my");
         insert.build();
     }
     
     @Test(timeout = 35L)
-    public void testSimple() {
+    public void simple() {
         Insert insert = new Insert();
         insert.into("myTable")
               .set("a", 11);
@@ -30,7 +30,7 @@ public class InsertTest {
     }
     
     @Test(timeout = 35L)
-    public void testComplex() {
+    public void complex() {
         Insert insert = new Insert();
         insert.into("myTable")
               .set("a", 11)
@@ -41,43 +41,43 @@ public class InsertTest {
     }
 
     @Test(timeout = 15L, expected = NullPointerException.class)
-    public void testTableNull() {
+    public void tableNull() {
         Insert insert = new Insert();
         insert.into(null);
     }
 
     @Test(timeout = 15L, expected = IllegalArgumentException.class)
-    public void testTableEmpty() {
+    public void tableEmpty() {
         Insert insert = new Insert();
         insert.into("");
     }
 
     @Test(timeout = 15L, expected = IllegalArgumentException.class)
-    public void testTableIncorrect() {
+    public void tableIncorrect() {
         Insert insert = new Insert();
         insert.into("1table");
     }
 
     @Test(timeout = 15L, expected = NullPointerException.class)
-    public void testColumnNull() {
+    public void columnNull() {
         Insert insert = new Insert();
         insert.set(null, 11);
     }
 
     @Test(timeout = 15L, expected = IllegalArgumentException.class)
-    public void testColumnEmpty() {
+    public void columnEmpty() {
         Insert insert = new Insert();
         insert.set("", 12);
     }
 
     @Test(timeout = 15L, expected = IllegalArgumentException.class)
-    public void testColumnIncorrect() {
+    public void columnIncorrect() {
         Insert insert = new Insert();
         insert.set("1column", 13);
     }
 
     @Test(timeout = 30L)
-    public void testValueNumber() {
+    public void valueNumber() {
         Insert insert = new Insert();
         insert.into("my")
               .set("integer", 7)
@@ -91,7 +91,7 @@ public class InsertTest {
 
 
     @Test(timeout = 30L)
-    public void testValueObjects() {
+    public void valueObjects() {
         Insert insert = new Insert();
         insert.into("my")
               .set("string", "'some string'")
@@ -108,7 +108,7 @@ public class InsertTest {
     }
 
     @Test(timeout = 15L)
-    public void testValueNull() {
+    public void valueNull() {
         Insert insert = new Insert();
         insert.into("my").set("test", null);
 

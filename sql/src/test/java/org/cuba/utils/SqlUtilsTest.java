@@ -7,42 +7,42 @@ import org.junit.Test;
 public class SqlUtilsTest {
     
     @Test(timeout = 15L, expected = NullPointerException.class)
-    public void testColumnNameNull() {
+    public void columnNameNull() {
         SqlUtils.checkColumnName(null);
     }
     
     @Test(timeout = 15L, expected = IllegalArgumentException.class)
-    public void testColumnNameEmpty() {
+    public void columnNameEmpty() {
         SqlUtils.checkColumnName("");
     }
     
     @Test(timeout = 15L, expected = IllegalArgumentException.class)
-    public void testColumnNameIncorrect() {
+    public void columnNameIncorrect() {
         SqlUtils.checkColumnName("1column");
     }
 
     @Test(timeout = 15L, expected = NullPointerException.class)
-    public void testTableNameNull() {
+    public void tableNameNull() {
         SqlUtils.checkTableName(null);
     }
     
     @Test(timeout = 15L, expected = IllegalArgumentException.class)
-    public void testTableNameEmpty() {
+    public void tableNameEmpty() {
         SqlUtils.checkTableName("");
     }
     
     @Test(timeout = 15L, expected = IllegalArgumentException.class)
-    public void testTableNameIncorrect() {
+    public void tableNameIncorrect() {
         SqlUtils.checkTableName("1column");
     }
     
     @Test(timeout = 15L, expected = IllegalStateException.class)
-    public void testWriteExpressionNoTable() {
+    public void writeExpressionNoTable() {
         SqlUtils.checkWriteExpression(null, new HashMap<>());
     }
     
     @Test(timeout = 15L, expected = IllegalStateException.class)
-    public void testWriteExpressionNoValues() {
+    public void writeExpressionNoValues() {
         SqlUtils.checkWriteExpression("table", new HashMap<>());
     }
 }

@@ -7,30 +7,30 @@ import org.junit.Test;
 public class DeleteTest {
 
     @Test(timeout = 15L, expected = IllegalStateException.class)
-    public void testNoTable() {
+    public void noTable() {
         Delete delete = new Delete();
         delete.build();
     }
     @Test(timeout = 15L, expected = NullPointerException.class)
-    public void testTableNull() {
+    public void tableNull() {
         Delete delete = new Delete();
         delete.from(null);
     }
 
     @Test(timeout = 15L, expected = IllegalArgumentException.class)
-    public void testTableEmpty() {
+    public void tableEmpty() {
         Delete delete = new Delete();
         delete.from("");
     }
 
     @Test(timeout = 15L, expected = IllegalArgumentException.class)
-    public void testTableIncorrect() {
+    public void tableIncorrect() {
         Delete delete = new Delete();
         delete.from("1table");
     }
     
     @Test(timeout = 35L)
-    public void testSimple() {
+    public void simple() {
         Delete delete = new Delete();
         delete.from("table");
         
@@ -38,7 +38,7 @@ public class DeleteTest {
     }
     
     @Test(timeout = 35L)
-    public void testComplex() {
+    public void complex() {
         Delete delete = new Delete();
         delete.from("table")
               .where()
