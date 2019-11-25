@@ -131,6 +131,19 @@ public class Condition<E extends Expression> implements Expression {
         return parent;
     }
     
+    public E column(String table, String name) {
+        if(operation == null) {
+            throw new IllegalStateException("Operation does not specified");
+        }
+        if(second != null) {
+            throw new IllegalStateException("Value already specified");
+        }
+        SqlUtils.checkTableName(table);
+        SqlUtils.checkColumnName(name);
+        second = table + "." + name;
+        return parent;
+    }
+    
     @Override
     public CharSequence build() {
         if(operation == null) {

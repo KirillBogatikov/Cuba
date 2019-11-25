@@ -26,6 +26,14 @@ public class Where<E extends Expression> implements Expression {
         return item.condition = new Condition<>(this, name);
     }
     
+    public Condition<Where<E>> column(String table, String name) {
+        SqlUtils.checkTableName(table);
+        SqlUtils.checkColumnName(name);
+        checkItem();        
+        item = new Item();
+        return item.condition = new Condition<>(this, table + "." + name);
+    }
+    
     public Where<E> and() {
         checkState();
         item.link = " AND ";
