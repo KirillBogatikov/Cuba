@@ -17,11 +17,6 @@ public class Order implements Expression {
         this.parent = parent;
     }
     
-    public Order by(String table, String column) {
-        byColumn(table, column, true);
-        return this;
-    }
-    
     public Order by(String column) {
         byColumn(null, column, false);
         return this;
