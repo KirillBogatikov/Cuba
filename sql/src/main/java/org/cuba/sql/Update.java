@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import org.cuba.sql.common.Expression;
+import org.cuba.sql.common.Where;
 import org.cuba.utils.SqlUtils;
 
 public class Update implements Expression {
@@ -13,7 +15,7 @@ public class Update implements Expression {
     private Map<String, String> values;
 
     public Update() {
-        where = new Where<>(this);
+        where = new Where<>(this, true);
         values = new LinkedHashMap<>();
     }
     
@@ -52,12 +54,16 @@ public class Update implements Expression {
         }
         
         builder.append(joiner);
-        
-        CharSequence whereClause = where.build();
-        if(whereClause.length() > 0) {
-            builder.append(" ").append(whereClause);
+
+        if(!where.isEmpty()) {
+            builder.append(" ").append(where.build());
         }
         
         return builder;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return table == null || values.isEmpty();
     }
 }

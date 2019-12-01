@@ -1,4 +1,4 @@
-package org.cuba.sql;
+package org.cuba.sql.common;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,16 +7,18 @@ import org.cuba.utils.SqlUtils;
 
 public class Where<E extends Expression> implements Expression {
     private E parent;
+    private boolean appendWhere;
     private Item item;
     private List<Item> items;
     
-    public Where(E parent) {
+    public Where(E parent, boolean appendWhere) {
         this.parent = parent;
+        this.appendWhere = appendWhere;
         items = new ArrayList<>(3);
     }
     
     public Where() {
-        this(null);
+        this(null, true);
     }
     
     public Condition<Where<E>> column(String name) {
@@ -47,20 +49,31 @@ public class Where<E extends Expression> implements Expression {
         commit();
         return this;
     }
+    
+    public Where<Where<E>> begin() {
+        checkItem();
+        item = new Item();
+        item.where = new Where<Where<E>>(this, false);
+        return item.where;
+    }
+    
+    public E end() {
+        return parent;
+    }    
 
     @Override
     public CharSequence build() {
         if(item != null) {
             commit();
         }
-        
-        if(items.isEmpty()) {
+
+        if(isEmpty()) {
             return "";
         }
         
         StringBuilder builder = new StringBuilder();
         
-        if(!(parent instanceof Where)) {
+        if(appendWhere) {
             builder.append("WHERE ");
         }
         
@@ -81,18 +94,15 @@ public class Where<E extends Expression> implements Expression {
 
         return builder;
     }
+
+    @Override
+    public boolean isEmpty() {
+        if(item != null && item.condition.second != null) {
+            commit();
+        }
+        return items.isEmpty();
+    }
         
-    public Where<Where<E>> begin() {
-        checkItem();
-        item = new Item();
-        item.where = new Where<Where<E>>(this);
-        return item.where;
-    }
-    
-    public E end() {
-        return parent;
-    }
-    
     private void checkItem() throws IllegalStateException {
         if(item != null) {
             if(item.condition.isCompleted() && item.link == null) {

@@ -1,17 +1,26 @@
-package org.cuba.sql;
+package org.cuba.sql.select;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cuba.sql.common.Expression;
+import org.cuba.sql.common.Where;
 import org.cuba.utils.SqlUtils;
 
 public class Group implements Expression {
+    private Select parent;
     private List<Item> columns;
     private Where<Group> having;
 
-    public Group() {
+    public Group(Select parent) {
+        this.parent = parent;
         columns = new ArrayList<>();
-        having = new Where<>(this);
+        having = new Where<>(this, false);
+    }
+    
+    public Group by(String column) {
+        byColumn(null, column, false);
+        return this;
     }
     
     public Group by(String table, String... columns) {
@@ -35,9 +44,13 @@ public class Group implements Expression {
         return having;
     }
     
+    public Select end() {
+        return parent;
+    }
+    
     @Override
     public CharSequence build() {
-        if(columns.isEmpty()) {
+        if(isEmpty()) {
             return "";
         }
         
@@ -56,11 +69,15 @@ public class Group implements Expression {
         
         CharSequence havingClause = having.build();
         if(havingClause.length() > 0) {
-            havingClause = havingClause.subSequence(6, havingClause.length());
             builder.append(" HAVING ").append(havingClause);
         }
         
         return builder;        
+    }
+    
+    @Override
+    public boolean isEmpty() {
+        return columns.isEmpty();
     }
     
     private void byColumn(String table, String column, boolean hasTable) {
@@ -81,7 +98,6 @@ public class Group implements Expression {
 
         columns.add(item);
     }
-
 
     private class Item {
         public String table;

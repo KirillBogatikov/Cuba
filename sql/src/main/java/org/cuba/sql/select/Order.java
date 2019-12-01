@@ -1,8 +1,9 @@
-package org.cuba.sql;
+package org.cuba.sql.select;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cuba.sql.common.Expression;
 import org.cuba.utils.SqlUtils;
 
 public class Order implements Expression {
@@ -100,7 +101,7 @@ public class Order implements Expression {
             commit();
         }
         
-        if(columns.isEmpty()) {
+        if(isEmpty()) {
             return "";
         }
         
@@ -120,6 +121,11 @@ public class Order implements Expression {
             }
         }
         return builder;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return columns.isEmpty();
     }
     
     private void byColumn(String table, String column, boolean hasTable) {

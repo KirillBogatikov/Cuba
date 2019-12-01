@@ -1,24 +1,31 @@
-package org.cuba.sql;
+package org.cuba.sql.select;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import org.cuba.sql.common.Expression;
+import org.cuba.sql.common.Where;
 import org.cuba.utils.SqlUtils;
 
 public class Select implements Expression {
     private Map<String, Columns> target;
     private Where<Select> where;
+    private Group group;
+    private Order order;
     private Map<String, Join> joins;
     private boolean fetchAll;
 
     public Select() {      
         target = new LinkedHashMap<>();
         joins = new LinkedHashMap<>();
-        where = new Where<>(this);
+        where = new Where<>(this, false);
+        group = new Group(this);
+        order = new Order(this);        
     }
     
     public Select from(String table) {
@@ -32,10 +39,6 @@ public class Select implements Expression {
     }
     
     public Select from(String... tables) {
-        if(tables == null) {
-            throw new NullPointerException("Tables is null");
-        }
-        
         switch(tables.length) {
             case 0: throw new IllegalArgumentException("No tables");
             case 1: return from(tables[0]);
@@ -49,7 +52,7 @@ public class Select implements Expression {
     }
     
     public Select all(String table) {
-        col(table, "*", false);        
+        column(table, "*", false);        
         return this;
     }
     
@@ -60,12 +63,12 @@ public class Select implements Expression {
     }
     
     public Select column(String table, String column) {
-        col(table, column, false);
+        column(table, column, false);
         return this;
     }
     
     public Select column(String column) {
-        col(null, column, true);
+        column(null, column, true);
         return this;
     }
     
@@ -88,6 +91,14 @@ public class Select implements Expression {
     public Where<Select> where() {
         return where;
     }
+    
+    public Group group() {
+        return group;
+    }
+    
+    public Order order() {
+        return order;
+    }
 
     @Override
     public CharSequence build() {
@@ -99,43 +110,70 @@ public class Select implements Expression {
             tablesJoiner.add(table);
         }
         
-        if(fetchAll) {
-            builder.append("*");
-        } else {
-            StringJoiner columnsJoiner = new StringJoiner(", ");
-            for(String table : tables) {
-                Columns columns = target.get(table);
-                if(columns.all) {
-                    columnsJoiner.add(table + ".*");
-                } else {
-                    for(String column : columns.columns) {
-                        columnsJoiner.add(table + "." + column);
-                    }
-                }
-            }
-            builder.append(columnsJoiner);
-        }
         
-        builder.append(" FROM ")
+        builder.append(buildColumns())
+               .append(" FROM ")
                .append(tablesJoiner);
         
         if(!joins.isEmpty()) {
-            StringBuilder joinsBuilder = new StringBuilder();
-            tables = joins.keySet(); 
-            for(String table : tables) {
-                Join join = joins.get(table);
-                joinsBuilder.append(join.type).append(" JOIN ")
-                            .append(table).append(" ON ");
-                
-                CharSequence onClause = join.on.build();
-                onClause = onClause.subSequence(6, onClause.length());
-                joinsBuilder.append(onClause);
-            }
-            builder.append(" ").append(joinsBuilder);
+            builder.append(" ").append(buildJoins());
         }
-        builder.append(" ").append(where.build());
+        
+        if(!where.isEmpty()) {
+            builder.append(" ").append(where.build());
+        }
+        
+        if(!group.isEmpty()) {
+            builder.append(" ").append(group.build());
+        }
+        
+        if(!order.isEmpty()) {
+            builder.append(" ").append(order.build());
+        }
         
         return builder;
+    }
+    
+    @Override
+    public boolean isEmpty() {
+        return target.isEmpty();
+    }
+    
+    private CharSequence buildJoins() {
+        StringBuilder joinsBuilder = new StringBuilder();
+        Set<String> tables = joins.keySet(); 
+        for(String table : tables) {
+            Join join = joins.get(table);
+            joinsBuilder.append(join.type).append(" JOIN ")
+                        .append(table).append(" ON ");
+            
+            CharSequence onClause = join.on.build();
+            joinsBuilder.append(onClause);
+        }
+        return joinsBuilder;
+    }
+    
+    private CharSequence buildColumns() {
+        if(fetchAll) {
+            return "*";
+        }
+        
+        Set<String> tables = target.keySet();
+        StringJoiner columnJoiner = new StringJoiner(", ");
+        for(String table : tables) {
+            Columns columns = target.get(table);
+            
+            if(columns.all) {
+                columnJoiner.add((table == null ? "" : table + ".") + "*");
+                continue;
+            }
+            
+            for(String column : columns) {
+                columnJoiner.add((table == null ? "" : table + ".") + column);
+            }
+        }
+        
+        return columnJoiner.toString();
     }
     
     private void checkFetchAll() {
@@ -144,7 +182,7 @@ public class Select implements Expression {
         }
     }
     
-    private void col(String table, String column, boolean noTable) {
+    private void column(String table, String column, boolean noTable) {
         checkFetchAll();
         if(!noTable) {
             SqlUtils.checkTableName(table);
@@ -177,10 +215,10 @@ public class Select implements Expression {
         Join join = new Join();
         joins.put(table, join);
         join.type = type;
-        return join.on = new Where<>(this);
+        return join.on = new Where<>(this, false);
     }
 
-    private class Columns {
+    private class Columns implements Iterable<String> {
         public boolean all;
         public List<String> columns;
         
@@ -194,6 +232,11 @@ public class Select implements Expression {
         
         public void add(String column) {
             columns.add(column);
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+            return columns.iterator();
         }
     }
     

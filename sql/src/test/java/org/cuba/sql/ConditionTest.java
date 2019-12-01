@@ -2,6 +2,8 @@ package org.cuba.sql;
 
 import static org.junit.Assert.assertEquals;
 
+import org.cuba.sql.common.Condition;
+import org.cuba.sql.common.Expression;
 import org.junit.Test;
 
 public class ConditionTest {

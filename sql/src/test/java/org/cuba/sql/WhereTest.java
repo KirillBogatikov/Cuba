@@ -4,6 +4,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+import org.cuba.sql.common.Expression;
+import org.cuba.sql.common.Where;
+
 public class WhereTest {
     
     @Test(timeout = 15L)

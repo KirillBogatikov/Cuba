@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import org.cuba.sql.common.Expression;
 import org.cuba.utils.SqlUtils;
 
 public class Insert implements Expression {
@@ -55,6 +56,11 @@ public class Insert implements Expression {
                .append(")");
                 
         return builder;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return table == null || values.isEmpty();
     }
 
 }

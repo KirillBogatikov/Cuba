@@ -2,6 +2,7 @@ package org.cuba.sql;
 
 import static org.junit.Assert.assertEquals;
 
+import org.cuba.sql.select.Order;
 import org.junit.Test;
 
 public class OrderTest {

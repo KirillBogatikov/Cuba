@@ -1,16 +1,20 @@
-package org.cuba.sql;
+package org.cuba.sql.common;
 
 import java.util.StringJoiner;
 
 import org.cuba.utils.SqlUtils;
 
 public class Condition<E extends Expression> implements Expression {
-    private E parent;
-    private String first;
-    private String operation;
-    private String second;
-    private boolean negative;
-    private boolean brackets;
+    protected E parent;
+    protected String first;
+    protected String operation;
+    protected String second;
+    protected boolean negative;
+    protected boolean brackets;
+
+    public Condition(E parent) {     
+        this.parent = parent;
+    }
     
     public Condition(E parent, String first) {
         SqlUtils.checkColumnName(first);      
@@ -120,27 +124,12 @@ public class Condition<E extends Expression> implements Expression {
     }
     
     public E column(String name) {
-        if(operation == null) {
-            throw new IllegalStateException("Operation does not specified");
-        }
-        if(second != null) {
-            throw new IllegalStateException("Value already specified");
-        }
-        SqlUtils.checkColumnName(name);
-        second = name;
+        column(null, name, false);
         return parent;
     }
     
     public E column(String table, String name) {
-        if(operation == null) {
-            throw new IllegalStateException("Operation does not specified");
-        }
-        if(second != null) {
-            throw new IllegalStateException("Value already specified");
-        }
-        SqlUtils.checkTableName(table);
-        SqlUtils.checkColumnName(name);
-        second = table + "." + name;
+        column(table, name, true);
         return parent;
     }
     
@@ -171,8 +160,31 @@ public class Condition<E extends Expression> implements Expression {
         }
         return builder;
     }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
     
     public boolean isCompleted() {
         return operation != null && second != null;
+    }
+    
+    protected void column(String table, String column, boolean hasTable) {
+        if(operation == null) {
+            throw new IllegalStateException("Operation does not specified");
+        }
+        if(second != null) {
+            throw new IllegalStateException("Value already specified");
+        }
+        
+        if(hasTable) {
+            SqlUtils.checkTableName(table);
+            SqlUtils.checkColumnName(column);
+            second = table + "." + column;
+        } else {
+            SqlUtils.checkColumnName(column);
+            second = column;
+        }
     }
 }

@@ -1,5 +1,7 @@
 package org.cuba.sql;
 
+import org.cuba.sql.common.Expression;
+import org.cuba.sql.common.Where;
 import org.cuba.utils.SqlUtils;
 
 public class Delete implements Expression {
@@ -7,7 +9,7 @@ public class Delete implements Expression {
     private Where<Delete> where;
     
     public Delete() {
-        where = new Where<>(this);
+        where = new Where<>(this, true);
     }
 
     public Delete from(String table) {
@@ -28,10 +30,14 @@ public class Delete implements Expression {
         StringBuilder builder = new StringBuilder("DELETE FROM ");
         builder.append(table);
         
-        CharSequence whereClause = where.build();
-        if(whereClause.length() > 0) {
-           builder.append(" ").append(whereClause);
+        if(!where.isEmpty()) {
+           builder.append(" ").append(where.build());
         }
         return builder;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return table == null;
     }
 }
