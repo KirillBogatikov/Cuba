@@ -107,4 +107,10 @@ public class OrderTest {
         assertEquals("order by cd0 desc, cd9 desc, cd5 desc", order.build().toString().toLowerCase());
     }
 
+    @Test(timeout = 20L, expected = IllegalStateException.class)
+    public void descBeforeBy() {
+        Order order = new Order(null);
+        order.desc().by("cd9");
+    }
+
 }

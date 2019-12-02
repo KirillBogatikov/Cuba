@@ -78,12 +78,15 @@ public class Select implements Expression {
     }
     
     public Select all(String table) {
-        column(table, "*", false);        
+        column(table, "*", false);  
+        Columns cols = target.get(table);
+        cols.all = true;
         return this;
     }
     
     public Select all() {
         checkFetchAll();
+        checkAnyColumn();
         fetchAll = true;
         return this;
     }
@@ -234,24 +237,33 @@ public class Select implements Expression {
         }
     }
     
+    private void checkAnyColumn() {
+        if(!target.isEmpty()) {
+            Set<String> tables = target.keySet();
+            for(String table : tables) {
+                Columns columns = target.get(table);
+                if(!columns.columns.isEmpty()) {
+                    throw new IllegalStateException("Some columns selection already is specified");                    
+                }
+            }
+        }
+    }
+    
     private void column(String table, String column, boolean noTable) {
         checkFetchAll();
         if(!noTable) {
             SqlUtils.checkTableName(table);
         }
         SqlUtils.checkColumnName(column);
-        Set<String> tables = target.keySet();
         
-        Columns columns;
-        if(tables.contains(table)) {
-            columns = target.get(table);
-        } else {
+        Columns columns = target.get(table);
+        if(columns == null) {
             columns = new Columns();
             target.put(table, columns);
         }
-
+        
         if(columns.all) {
-            throw new IllegalArgumentException("A selection of all columns from '" + table + "' already is specified");
+            throw new IllegalStateException("A selection of all columns from '" + table + "' already is specified");
         }
         if(columns.has(column)) {
             throw new IllegalArgumentException("Column " + table + "." + column + " already is specified");

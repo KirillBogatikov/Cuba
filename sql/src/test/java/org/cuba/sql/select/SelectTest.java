@@ -112,5 +112,22 @@ public class SelectTest {
                 + "limit 10 offset 3", select.build().toString().toLowerCase());
     }
     
+    @Test(timeout = 15L, expected = IllegalStateException.class)
+    public void allAfterColumn() {
+        Select select = new Select();
+        select.column("a").all();
+    }
+
+    @Test(timeout = 15L, expected = IllegalStateException.class)
+    public void columnAfterAll() {
+        Select select = new Select();
+        select.all().column("a");
+    }
+
+    @Test(timeout = 15L, expected = IllegalStateException.class)
+    public void columnAfterTableAll() {
+        Select select = new Select();
+        select.all("t").column("a").column("t", "nb");
+    }
     
 }
