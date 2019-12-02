@@ -19,13 +19,39 @@ public class Select implements Expression {
     private Order order;
     private Map<String, Join> joins;
     private boolean fetchAll;
+    private boolean distinct;
+    private Integer offset, limit;
 
     public Select() {      
         target = new LinkedHashMap<>();
         joins = new LinkedHashMap<>();
-        where = new Where<>(this, false);
+        where = new Where<>(this, true);
         group = new Group(this);
         order = new Order(this);        
+    }
+    
+    public Select distinct() {
+        if(distinct) {
+            throw new IllegalStateException("Select already is distinct");
+        }
+        distinct = true;
+        return this;
+    }
+    
+    public Select offset(int offset) {
+        if(this.offset != null) {
+            throw new IllegalStateException("Offset already specified");
+        }
+        this.offset = offset;
+        return this;
+    }
+    
+    public Select limit(int limit) {
+        if(this.limit != null) {
+            throw new IllegalStateException("Limit already specified");
+        }
+        this.limit = limit;
+        return this;
     }
     
     public Select from(String table) {
@@ -67,6 +93,19 @@ public class Select implements Expression {
         return this;
     }
     
+    public Select columns(String table, String... columns) {
+        switch(columns.length) {
+            case 0: throw new IllegalArgumentException("No columns");
+            case 1: column(table, columns[0], false); break;
+            default: {
+                for(String column : columns) {
+                    column(table, column, false);
+                }
+            }
+        }
+        return this;
+    }
+    
     public Select column(String column) {
         column(null, column, true);
         return this;
@@ -104,13 +143,19 @@ public class Select implements Expression {
     public CharSequence build() {
         StringBuilder builder = new StringBuilder("SELECT ");
                 
+        if(distinct) {
+            builder.append("DISTINCT ");
+        }
+        
         Set<String> tables = target.keySet();
         StringJoiner tablesJoiner = new StringJoiner(", ");
         for(String table : tables) {
+            if(table == null) {
+                continue;
+            }
             tablesJoiner.add(table);
         }
-        
-        
+                
         builder.append(buildColumns())
                .append(" FROM ")
                .append(tablesJoiner);
@@ -129,6 +174,13 @@ public class Select implements Expression {
         
         if(!order.isEmpty()) {
             builder.append(" ").append(order.build());
+        }
+        
+        if(limit != null) {
+            builder.append(" LIMIT ").append(limit);
+        }
+        if(offset != null) {
+            builder.append(" OFFSET ").append(offset);
         }
         
         return builder;
