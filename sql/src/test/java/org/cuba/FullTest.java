@@ -7,6 +7,7 @@ import org.cuba.sql.InsertTest;
 import org.cuba.sql.OrderTest;
 import org.cuba.sql.UpdateTest;
 import org.cuba.sql.WhereTest;
+import org.cuba.sql.select.SelectTest;
 import org.cuba.utils.SqlUtilsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -16,7 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ 
     SqlUtilsTest.class, ConditionTest.class, WhereTest.class, 
     OrderTest.class, GroupTest.class,
-    UpdateTest.class, InsertTest.class, DeleteTest.class })
+    UpdateTest.class, InsertTest.class, DeleteTest.class, SelectTest.class })
 public class FullTest {
     
 }
