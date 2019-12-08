@@ -2,6 +2,7 @@ package org.cuba.log;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,7 +11,6 @@ import org.cuba.log.stream.LogStream;
 
 public class Log {        
     private static String PID = null;
-    private static String TAG = Log.class.getSimpleName();
     
     static {
         try {
@@ -21,24 +21,20 @@ public class Log {
             t.printStackTrace();
         }
     }
-    
-    private static Log defaultLog;
-    
-    public static Log defaultLog() {
-        if(defaultLog == null) {
-            defaultLog = new Log(Configurator.defaultConfigurator().build());
-        }
-        return defaultLog;
+
+    public static Log forClass(Class<?> clazz) {
+        Log log = new Log(Configurator.system().build());
+        log.defaultTag = clazz.getName();
+        return log;
     }
     
+    private String defaultTag;
     private Configuration config;
-    private Set<Level> softMuted;
-    private Set<Level> hardMuted;
+    private Set<Level> muted;
     
     public Log(Configuration config) {
         this.config = config;
-        this.softMuted = new HashSet<>();
-        this.hardMuted = new HashSet<>();
+        this.muted = Collections.synchronizedSet(new HashSet<>());
     }
     
     private void check(LogStream stream, Level level) {
@@ -48,41 +44,37 @@ public class Log {
     }
     
     private void log(LogStream stream, Level level, LogRecord logRecord) {
-        if(softMuted.contains(level)) { 
+        if(muted.contains(level)) { 
             return; 
         }
-        if(hardMuted.contains(level)) {
-            throw new IllegalStateException(level + " stream is muted");
-        }
         
-        check(stream, level);
-        stream.write(logRecord);
+        synchronized(stream) {
+            check(stream, level);
+            stream.write(logRecord);
+        }
     }
     
     private LogRecord newRecord(String tag, String message, Throwable error, Object data) {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace(); 
+        StackTraceElement stackTraceItem = stackTrace[stackTrace.length - 2];
+        
         if(tag == null) {
-            tag = TAG;
+            if(defaultTag == null) {
+                tag = stackTraceItem.getClassName();
+            } else {
+                tag = defaultTag;
+            }
         }
         
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace(); 
-        return new LogRecord(Level.INFO, PID, tag, message, System.currentTimeMillis(), stackTrace[stackTrace.length - 2], error, data);
+        return new LogRecord(Level.INFO, PID, tag, message, System.currentTimeMillis(), stackTraceItem, error, data);
     }
 
     public void mute(Level level) {
-        mute(level, true);
+        muted.add(level);
     }
-    
-    public void mute(Level level, boolean soft) {
-        if(soft) {
-            softMuted.add(level);
-        } else {
-            hardMuted.add(level);
-        }
-    }
-    
+        
     public void unmute(Level level) {
-        softMuted.remove(level);
-        hardMuted.remove(level);
+        muted.remove(level);
     }
     
     public void i(String message) {
