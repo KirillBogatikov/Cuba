@@ -35,34 +35,6 @@ public class LogPrintStream extends LogStream {
     }
     
     /**
-     * Previously this method was used to change the print pattern.<br>
-     * With Cuba 1.1.0 and introducing {@link Formatter} this method marked<br>
-     * as deprecated and now it always throws {@link RuntimeException}
-     *  
-     * @throws RuntimeException with "setPattern is deprecated and removed from Cuba 1.1.0" always
-     * @deprecated at 1.1.0. Use {@link Formatter} and {@link #setFormatter(Formatter)} instead
-     * @param timeFormat
-     */
-    @Deprecated
-    public void setPattern(String pattern) {
-        throw new RuntimeException("setPattern is deprecated and removed from Cuba 1.1.0");
-    }
-    
-    /**
-     * Previously this method was used to change the date format.<br>
-     * With Cuba 1.1.0 and introducing {@link Formatter} this method marked<br>
-     * as deprecated and now it always throws {@link RuntimeException}
-     *  
-     * @throws RuntimeException with "setTimeFormat is deprecated and removed from Cuba 1.1.0" always
-     * @deprecated at 1.1.0. Use {@link Formatter} and {@link #setFormatter(Formatter)} instead
-     * @param timeFormat
-     */
-    @Deprecated
-    public void setTimeFormat(String timeFormat) {
-        throw new RuntimeException("setTimeFormat is deprecated and removed from Cuba 1.1.0");
-    }
-    
-    /**
      * Applies specified formatter or use default implementation.
      * <p>
      * If <code>formatter</code> is null, this method replaces<br>
