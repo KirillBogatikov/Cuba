@@ -9,6 +9,48 @@ import java.util.Set;
 import org.cuba.log.stream.LogRecord;
 import org.cuba.log.stream.LogStream;
 
+/**
+ * Provides very simple and useful tool for logging events.
+ * <p>
+ * Log workflow is next:
+ * <ol>
+ *     <li>You call any logging method:
+ *         <ul>
+ *             <li>{@link #d(String)},</li>
+ *             <li>{@link #d(String, String)},</li>
+ *             <li>{@link #d(String, String, Object)}</li>
+ *             <li>{@link #d(String, String, Throwable)}</li>
+ *             <li>{@link #e(String)},</li>
+ *             <li>{@link #e(String, String)},</li>
+ *             <li>{@link #e(String, String, Object)}</li>
+ *             <li>{@link #e(String, String, Throwable)}</li>
+ *             <li>{@link #i(String)},</li>
+ *             <li>{@link #i(String, String)},</li>
+ *             <li>{@link #i(String, String, Object)}</li>
+ *             <li>{@link #i(String, String, Throwable)}</li>
+ *             <li>{@link #w(String)},</li>
+ *             <li>{@link #w(String, String)},</li>
+ *             <li>{@link #w(String, String, Object)}</li>
+ *             <li>{@link #w(String, String, Throwable)}</li>
+ *         </ul>
+ *     </li>
+ *     <li>Log retrieves from {@link Configuration} {@link LogStream} for log level</li>
+ *     <li>Log collect info about event and pack it into {@link LogRecord}</li>
+ *     <li>Log checks {@link Level} for enabled mutation</li>
+ *     <li>If stream for {@link Level} was muted, Log stops the logging</li>
+ *     <li>Otherwise Log check stream and writes {@link LogRecord} into it</li>
+ * </ol>
+ * <p>
+ * You can manage logging by {@link #mute(Level) muting} and {@link #unmute(Level) unmuting} streams. 
+ * <p>
+ * Cuba Log - is very extensible and customizable logging tool. You can use simple unified interface of<br>
+ * Log class in some places, but specify streams at start point. You can implement custom LogStream, for example,<br>
+ * to send logs into database or file. 
+ * 
+ * @author Kirill Bogatikov
+ * @version 1.2
+ * @since 1.0.0
+ */
 public class Log {        
     private static String PID = null;
     
