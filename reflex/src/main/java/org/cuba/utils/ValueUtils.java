@@ -5,7 +5,7 @@ package org.cuba.utils;
  * {@link Integer}, {@link Boolean}, etc.
  * 
  * @author Kirill Bogatikov
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  */
 public class ValueUtils {
@@ -19,6 +19,9 @@ public class ValueUtils {
      * 
      * @param object value for boxing 
      * @param <T> type of result, should be compatible with real result value
+     * @throws NullPointerException if <code>object</code> is null
+     * @throws ClassCastException if <code>&lt;T&gt;</code> is incompatible with boxed type
+     * @throws IllegalArgumentException if <code>object</code> is not primitive type
      * @return boxed value
      */
     @SuppressWarnings("unchecked")
