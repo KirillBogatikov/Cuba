@@ -1,4 +1,4 @@
-package org.cuba.reflex;
+package org.cuba.utils;
 
 import java.lang.reflect.Type;
 
