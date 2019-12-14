@@ -27,7 +27,15 @@ public class LogPrintStream extends LogStream {
         }
         
         this.target = target;
-        setFormatter(formatter);
+        unsafeSetFormatter(formatter);
+    }
+    
+    private void unsafeSetFormatter(Formatter formatter) {
+        if(formatter == null) {
+            this.formatter = new FormatterImpl();
+        } else {
+            this.formatter = formatter;
+        }
     }
     
     public LogPrintStream(PrintStream target) {
@@ -44,12 +52,8 @@ public class LogPrintStream extends LogStream {
      * @param formatter specified {@link Formatter} implementation
      */
     public void setFormatter(Formatter formatter) {
-        synchronized(formatter) {
-            if(formatter == null) {
-                this.formatter = new FormatterImpl();
-            } else {
-                this.formatter = formatter;
-            }
+        synchronized(this.formatter) {
+            unsafeSetFormatter(formatter);
         }
     }
         
@@ -57,7 +61,7 @@ public class LogPrintStream extends LogStream {
     public void write(LogRecord record) {
         String value;
         try {
-            synchronized(formatter) {
+            synchronized(this.formatter) {
                 value = formatter.format(record);
             }
         } catch(Throwable t) {
