@@ -4,6 +4,8 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.StringJoiner;
 
+import org.cuba.utils.TypeUtils;
+
 /**
  * Simple implementation of origin interface {@link java.lang.reflect.ParameterizedType}
  * <p>This class provides info about any ParameterizedType, such as List&lt;T&gt;, Map&lt;K, V&gt;, etc.<br>
