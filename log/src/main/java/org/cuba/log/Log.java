@@ -85,18 +85,11 @@ public class Log {
         }
     }
     
-    private void log(LogStream stream, Level level, LogRecord logRecord) {
+    private void log(LogStream stream, Level level, String tag, String message, Throwable error, Object data) {
         if(muted.contains(level)) { 
             return; 
         }
         
-        synchronized(stream) {
-            check(stream, level);
-            stream.write(logRecord);
-        }
-    }
-    
-    private LogRecord newRecord(String tag, String message, Throwable error, Object data) {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace(); 
         StackTraceElement stackTraceItem = stackTrace[stackTrace.length - 2];
         
@@ -108,7 +101,12 @@ public class Log {
             }
         }
         
-        return new LogRecord(Level.INFO, PID, tag, message, System.currentTimeMillis(), stackTraceItem, error, data);
+        LogRecord record = new LogRecord(level, PID, tag, message, System.currentTimeMillis(), stackTraceItem, error, data);
+        
+        synchronized(stream) {
+            check(stream, level);
+            stream.write(record);
+        }
     }
 
     public void mute(Level level) {
@@ -128,11 +126,11 @@ public class Log {
     }
     
     public void i(String tag, String message, Object data) {
-        log(config.info(), Level.INFO, newRecord(tag, message, null, data));
+        log(config.info(), Level.INFO, tag, message, null, data);
     }
     
     public void i(String tag, String message, Throwable error) {
-        log(config.info(), Level.INFO, newRecord(tag, message, error, null));
+        log(config.info(), Level.INFO, tag, message, error, null);
     }
     
     public void d(String message) {
@@ -144,11 +142,11 @@ public class Log {
     }
     
     public void d(String tag, String message, Object data) {
-        log(config.debug(), Level.DEBUG, newRecord(tag, message, null, data));
+        log(config.debug(), Level.DEBUG, tag, message, null, data);
     }
     
     public void d(String tag, String message, Throwable error) {
-        log(config.debug(), Level.DEBUG, newRecord(tag, message, error, null));
+        log(config.debug(), Level.DEBUG, tag, message, error, null);
     }
     
     public void e(String message) {
@@ -160,11 +158,11 @@ public class Log {
     }
     
     public void e(String tag, String message, Object data) {
-        log(config.error(), Level.ERROR, newRecord(tag, message, null, data));
+        log(config.error(), Level.ERROR, tag, message, null, data);
     }
     
     public void e(String tag, String message, Throwable error) {
-        log(config.error(), Level.ERROR, newRecord(tag, message, error, null));
+        log(config.error(), Level.ERROR, tag, message, error, null);
     }
     
     public void w(String message) {
@@ -176,10 +174,10 @@ public class Log {
     }
     
     public void w(String tag, String message, Object data) {
-        log(config.warn(), Level.WARN, newRecord(tag, message, null, data));
+        log(config.warn(), Level.WARN, tag, message, null, data);
     }
     
     public void w(String tag, String message, Throwable error) {
-        log(config.warn(), Level.WARN, newRecord(tag, message, error, null));
+        log(config.warn(), Level.WARN, tag, message, error, null);
     }
 }
