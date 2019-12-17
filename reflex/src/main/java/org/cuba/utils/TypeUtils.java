@@ -1,5 +1,6 @@
 package org.cuba.utils;
 
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
 /**
@@ -85,6 +86,10 @@ public class TypeUtils {
         if(target == null) {
             throw new NullPointerException("Target class is null");
         }
+        if(sub.equals(target)) {
+            throw new IllegalArgumentException("Subclass and target class equals");
+        }
+        
         try {
             sub.asSubclass(target);
             return true;
@@ -144,5 +149,27 @@ public class TypeUtils {
         }
         /* never or on new platforms with new types */
         return null;
+    }
+        
+    /**
+     * Returns true if {@code type} has {@code modifier} in signature
+     * <p><pre><code>
+     * public abstract class Example {
+     *     
+     * }
+     * </pre></code>
+     * Codes of modifiers represented in {@link Modifier} class:
+     * <pre><code>
+     * boolean isPublic = hasModifier(Example.class, {@link Modifier}.{@link Modifier#PUBLIC PUBLIC}); //true
+     * boolean isAbstract = hasModifier(Example.class, {@link Modifier}.{@link Modifier#ABSTRACT ABSTRACT}); //true
+     * boolean isFinal = hasModifier(Example.class, {@link Modifier}.{@link Modifier#FINAL FINAL}); //false
+     * </code></pre>
+     * 
+     * @param type class
+     * @param modifier specified modifier from {@link Modifier}
+     * @return true, if specified class has sppecified modifier, false otherwise
+     */
+    public static boolean hasModifier(Class<?> type, int modifier) {
+        return (type.getModifiers() & modifier) == modifier;
     }
 }
