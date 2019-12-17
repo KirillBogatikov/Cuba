@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.cuba.log.Log;
 
@@ -21,7 +22,7 @@ public class FileScanner implements Scanner {
     private File root;
     private List<Class<?>> preloaded;
     private List<String> indexedPaths;
-    private List<ClassLoader> loaders;
+    private Set<ClassLoader> loaders;
     private int pathIndex;
     
     public FileScanner(Log log) {
@@ -29,7 +30,7 @@ public class FileScanner implements Scanner {
     }
 
     @Override
-    public void use(List<ClassLoader> loaders) {
+    public void use(Set<ClassLoader> loaders) {
         this.loaders = loaders;
         log.d(TAG, "Will be used " + loaders.size() + " class loaders: ", loaders);
     }
@@ -39,6 +40,7 @@ public class FileScanner implements Scanner {
         root = new File(path);
         preloaded = new ArrayList<>();
         index(root, indexedPaths = new ArrayList<>());
+        pathIndex = 0;
     }
 
     @Override
@@ -48,7 +50,6 @@ public class FileScanner implements Scanner {
         while(pathIndex < indexedPaths.size() && loaded < count) {
             Class<?> clazz = load();
             preloaded.add(clazz);
-            pathIndex++;
             loaded++;
         }
         
@@ -88,8 +89,10 @@ public class FileScanner implements Scanner {
     }
     
     private void index(File parent, List<String> container) {
+        log.d(TAG, "Indexing " + parent);
         File[] files = parent.listFiles();
         if(files == null || files.length == 0) {
+            log.d(TAG, "No files");
             return;
         }
         
@@ -99,6 +102,7 @@ public class FileScanner implements Scanner {
             } else {
                 String name = file.getAbsolutePath();
                 if(name.endsWith(".class") && !name.contains("$")) {
+                    log.d(TAG, "Found bytecode file " + name);
                     container.add(name);
                 }
             }
@@ -118,7 +122,7 @@ public class FileScanner implements Scanner {
                 clazz = loader.loadClass(path);
                 break;
             } catch(ClassNotFoundException e) {
-                System.err.println(e);
+                log.e(TAG, "Class not found", e);
             }
         }
         return clazz;

@@ -1,7 +1,7 @@
 package org.cuba.reflex.scanner;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Scans specified classpath for all classes
@@ -16,7 +16,7 @@ public interface Scanner {
      * 
      * @param loaders list of class loaders
      */
-    public void use(List<ClassLoader> loaders);
+    public void use(Set<ClassLoader> loaders);
     
     /**
      * Prepares Scanner before scanning by opening classpath source<br>

@@ -4,8 +4,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+
+import org.cuba.log.Log;
 
 /**
  * Implements Scanner for loading classes from JAR file
@@ -18,19 +21,28 @@ import java.util.jar.JarInputStream;
  * @since 1.1.0
  */
 public class JarScanner implements Scanner {
+    private static final String TAG = JarScanner.class.getSimpleName();
+    
+    private Log log;
     private String path;
     private JarInputStream jarStream;
     private List<Class<?>> preloaded;
-    private List<ClassLoader> loaders;
+    private Set<ClassLoader> loaders;
 
+    public JarScanner(Log log) {
+        this.log = log;
+    }
+    
     @Override
-    public void use(List<ClassLoader> loaders) {
+    public void use(Set<ClassLoader> loaders) {
         this.loaders = loaders;
+        log.d(TAG, "Using loaders: ", loaders);
     }
     
     @Override
     public void open(String path) throws IOException {
         this.path = path;
+        log.d(TAG, "Opening JAR: ", path);
         jarStream = new JarInputStream(new FileInputStream(path));
         preloaded = new ArrayList<>();
     }
@@ -59,11 +71,13 @@ public class JarScanner implements Scanner {
         
         JarEntry entry = jarStream.getNextJarEntry();
         if(entry == null) {
+            log.d(TAG, "No entries");
             return null;
         }
         
         Class<?> clazz = loadClass(entry);
         if(clazz == null) {
+            log.d(TAG, "Trying parse next entry");
             return next();
         }
         return clazz;
@@ -98,7 +112,7 @@ public class JarScanner implements Scanner {
                 clazz = loader.loadClass(name);
                 break;
             } catch(ClassNotFoundException | NoClassDefFoundError e) {
-                System.err.println("L:\n"+e);
+                log.e(TAG, "Class not found", e);
             }
         }
         return clazz;
