@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +116,15 @@ public class Reflex {
         copy.addAll(repository);
         return copy;
     }
+    
+   public List<Class<?>> all(Comparator<Class<?>> comparator) {
+       findClasses();
+       
+       List<Class<?>> copy = new ArrayList<>();
+       copy.addAll(repository);
+       copy.sort(comparator);
+       return copy;
+   }
     
     public List<Class<?>> annotatedBy(Class<? extends Annotation> annotation) {
         if(annotation == null) {
