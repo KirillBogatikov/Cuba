@@ -218,6 +218,28 @@ public class Reflex {
         throw new RuntimeException("Parent of " + type + " is not found...");
     }
     
+    public List<Class<?>> interfaces() {
+        findClasses();
+        
+        ArrayList<Class<?>> classes = new ArrayList<>();
+        for(int i : interfacesIndex) {
+            classes.add(repository.get(i));
+        }
+                
+        return classes;
+    }
+    
+    public List<Class<?>> abstractClasses() {
+        findClasses();
+        
+        ArrayList<Class<?>> classes = new ArrayList<>();
+        for(int i : abstractIndex) {
+            classes.add(repository.get(i));
+        }
+                
+        return classes;
+    }
+    
     public void findClasses() {      
         synchronized(LOCK) {
             if(repositoryDepth == null) {
