@@ -24,7 +24,7 @@ import org.cuba.log.Level;
  * @see StackTraceElement
  * @see LogStream
  * @see Throwable
- * @see Log
+ * @see org.cuba.log.Log
  * 
  * @author Kirill Bogatikov
  * @version 1.0
@@ -152,6 +152,7 @@ public class LogRecord {
      * slow and rich operation. For this reason checking assigned to you.<br>
      * If you don't know type of data, using {@link Object} is recommended.
      *  
+     *  @param <T> type of result
      * @return object provided by event and casted to choosen type or null
      */
     @SuppressWarnings("unchecked")

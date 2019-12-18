@@ -153,11 +153,11 @@ public class TypeUtils {
         
     /**
      * Returns true if {@code type} has {@code modifier} in signature
-     * <p><pre><code>
+     * <pre><code>
      * public abstract class Example {
      *     
      * }
-     * </pre></code>
+     * </code></pre>
      * Codes of modifiers represented in {@link Modifier} class:
      * <pre><code>
      * boolean isPublic = hasModifier(Example.class, {@link Modifier}.{@link Modifier#PUBLIC PUBLIC}); //true

@@ -17,7 +17,7 @@ import java.util.Map;
  *     <li>Package node for 'org' contains a few Package nodes: cuba, kllbff and other</li>
  *     <li>Package node for 'cuba' contains a few Package nodes: utils, exceptions, reflex, io, etc.</li>
  *     <li>Package node for 'reflex' contains a two Package nodes: graph and scanner and few types: ParameterizedType and Reflex</li>
- * </code></pre>
+ * </ul>
  * 
  * @author Kirill Bogatikov
  * @version 1.0

@@ -55,7 +55,7 @@ public interface Scanner {
     /**
      * Closes Scanner and releases all resources
      * 
-     * @throws IOException
+     * @throws IOException if some error occurred at resources closing
      */
     public void close() throws IOException;
     

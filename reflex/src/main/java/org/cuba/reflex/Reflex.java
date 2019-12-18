@@ -28,7 +28,8 @@ import org.cuba.utils.TypeUtils;
  *    classes, interfaces and other entities, available from your app by JVM classpath.
  * <p>So, Reflex can fairly rapid process all classes from JRE. On average, it takes<br>
  *    1 millisecond to process one class.
- * <h5>Data storage</h5>
+ * 
+ * <h4>Data storage</h4>
  * <p>All instances of Reflex class uses commont static thread-safe blocking context.<br>
  *    Reflex stores all known classes in one big synchronized list called <i>"repository"</i>.<br>
  *    Also, for perfomance improvement each class indexed in a few indexes:
@@ -40,11 +41,13 @@ import org.cuba.utils.TypeUtils;
  *        <li>annotated index compares Annotation and classes, annotated with it,</li>
  *        <li>childs index compares class and it's childs</li>
  *    </ul>
- * <h5>Perfomance</h5> 
+ *    
+ * <h4>Perfomance</h4> 
  * <p>So, every Reflex instance can has different {@link Depth} values. So, if depth of current instance is bigger than<br>
  *    context's depth, all classes will be reloaded by current instance. At the same time, access to context will be locked until<br>
  *    current instance doesn't release it after finishing classes loading and indexing.
- * <h5>Logs</h5>
+ * 
+ * <h4>Logs</h4>
  * <p>Work of Reflex tool is very complex and unstable. Therefore, it uses agressive logging on {@link org.cuba.log.Level#DEBUG}
  * <p>Warning! Count of log records is greater the deeper the search and the more classes are available 
  * 
@@ -193,7 +196,7 @@ public class Reflex {
      * Returns classes annotated by specified {@code annotation}
      * <p>If classes repository is empty or current depth bigger than context depth, starts classes search
      * 
-     * @param annotation 
+     * @param annotation annotation class
      * @return list of classes annotated by specified {@code annotation}
      */
     public List<Class<?>> annotatedBy(Class<? extends Annotation> annotation) {
@@ -230,11 +233,11 @@ public class Reflex {
     }
     
     /**
-     * Returns classes which extends specified {@link type}
+     * Returns classes which extends specified {@code type}
      * <p>If classes repository is empty or current depth bigger than context depth, starts classes search
      * 
      * @param type parent class
-     * @return list of classes which extends specified {@link type}
+     * @return list of classes which extends specified {@code type}
      */
     public List<Class<?>> childs(Class<?> type) {
         if(type == null) {

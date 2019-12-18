@@ -19,10 +19,9 @@ public class Configurator {
     /**
      * Returns {@link Configurator} with pre-built {@link LogPrintStream LogPrintStreams}
      * based on {@link System#out} and {@link System#err}.
-     * <p>
-     * <ul>
-     *     <li>{@link Level#INFO} and {@link Level#DEBUG} -> {@link System#out}</li>
-     *     <li>{@link Level#WARN} and {@link Level#ERROR} -> {@link System#err}</li>
+     * <p><ul>
+     *     <li>{@link Level#INFO} and {@link Level#DEBUG} -&gt; {@link System#out}</li>
+     *     <li>{@link Level#WARN} and {@link Level#ERROR} -&gt; {@link System#err}</li>
      * </ul>
      * 
      * @return {@link Configurator} with pre-built {@link LogPrintStream LogPrintStreams} based on {@link System#out} and {@link System#err}

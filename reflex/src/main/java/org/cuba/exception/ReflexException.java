@@ -13,8 +13,6 @@ public class ReflexException extends RuntimeException {
 
     /**
      * Default constructor. Creates empty exception without message, but with stack trace
-     * 
-     * @see {@link RuntimeException#RuntimeException() default contructor of RuntimeException}
      */
     public ReflexException() {
         super();
@@ -22,8 +20,6 @@ public class ReflexException extends RuntimeException {
 
     /**
      * Creates exception with specified message and stack trace
-     *  
-     * @see {@link RuntimeException#RuntimeException(String) message contructor of RuntimeException}
      * 
      * @param message string message for exception
      */
@@ -33,8 +29,6 @@ public class ReflexException extends RuntimeException {
 
     /**
      * Creates exception caused by specified {@link Throwable}
-     * 
-     * @see {@link RuntimeException#RuntimeException(Throwable) contructor of RuntimeException}
      * 
      * @param cause 'parent' exception of this
      */
