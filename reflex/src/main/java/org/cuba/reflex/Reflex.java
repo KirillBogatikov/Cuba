@@ -22,6 +22,36 @@ import org.cuba.reflex.scanner.JarScanner;
 import org.cuba.reflex.scanner.Scanner;
 import org.cuba.utils.TypeUtils;
 
+/**
+ * <h3>ReFlex - Reflection flexible tool</h3>
+ * <p>Reflex is big tool, allows you to retrieve more information about<br>
+ *    classes, interfaces and other entities, available from your app by JVM classpath.
+ * <p>So, Reflex can fairly rapid process all classes from JRE. On average, it takes<br>
+ *    1 millisecond to process one class.
+ * <h5>Data storage</h5>
+ * <p>All instances of Reflex class uses commont static thread-safe blocking context.<br>
+ *    Reflex stores all known classes in one big synchronized list called <i>"repository"</i>.<br>
+ *    Also, for perfomance improvement each class indexed in a few indexes:
+ *    <ul>
+ *        <li>interfaces index - contains only interfaces,</li>
+ *        <li>abstract index - contains only abstract classes,</li>
+ *        <li>full name index compares each class with it's full name (for example, java.lang.Number - full name of {@link Number} class,</li>
+ *        <li>simple name index compares a few classes with their simple names (for example, Number - simple name of {@link Number java.lang.Number} class,</li>
+ *        <li>annotated index compares Annotation and classes, annotated with it,</li>
+ *        <li>childs index compares class and it's childs</li>
+ *    </ul>
+ * <h5>Perfomance</h5> 
+ * <p>So, every Reflex instance can has different {@link Depth} values. So, if depth of current instance is bigger than<br>
+ *    context's depth, all classes will be reloaded by current instance. At the same time, access to context will be locked until<br>
+ *    current instance doesn't release it after finishing classes loading and indexing.
+ * <h5>Logs</h5>
+ * <p>Work of Reflex tool is very complex and unstable. Therefore, it uses agressive logging on {@link org.cuba.log.Level#DEBUG}
+ * <p>Warning! Count of log records is greater the deeper the search and the more classes are available 
+ * 
+ * @author Kirill Bogatikov
+ * @version 1.0
+ * @since 1.1.0
+ */
 public class Reflex {    
     public static String getPathToRtJar() {
         String home = System.getenv("JAVA_HOME");
@@ -71,7 +101,20 @@ public class Reflex {
     private AtomicBoolean searchInProcess;
     private Set<ClassLoader> loaders;
     
-    public Reflex(Depth depth, Log log) {        
+    /**
+     * Creates Reflex with specified depth and log instance
+     * 
+     * @param depth depth of classes search
+     * @param log instance of {@link Log} used to logging events
+     */
+    public Reflex(Depth depth, Log log) {       
+        if(depth == null) {
+            throw new NullPointerException("Depth is null");
+        }
+        if(log == null) {
+            throw new NullPointerException("Log is null");
+        }
+        
         this.depth = depth;
         this.log = log;
         this.searchInProcess = new AtomicBoolean(false);
@@ -81,6 +124,11 @@ public class Reflex {
         loaders.add(Reflex.class.getClassLoader());
     }
     
+    /**
+     * Adds new class loader into this reflex
+     * 
+     * @param loader new class loader
+     */
     public void addLoader(ClassLoader loader) {
         if(loader == null) {
             throw new NullPointerException("Loader is null");
@@ -95,6 +143,11 @@ public class Reflex {
         loaders.add(loader);
     }
     
+    /**
+     * Removes class loader from reflex 
+     * 
+     * @param loader early added class loader
+     */
     public void removeLoader(ClassLoader loader) {
         if(loader == null) {
             throw new NullPointerException("Loader is null");
@@ -109,6 +162,12 @@ public class Reflex {
         loaders.remove(loader);
     }
      
+    /**
+     * Returns all known classes
+     * <p>If classes repository is empty or current depth bigger than context depth, starts classes search
+     * 
+     * @return list of all known classes
+     */
     public List<Class<?>> all() {
         findClasses();
         
@@ -117,15 +176,26 @@ public class Reflex {
         return copy;
     }
     
-   public List<Class<?>> all(Comparator<Class<?>> comparator) {
-       findClasses();
-       
-       List<Class<?>> copy = new ArrayList<>();
-       copy.addAll(repository);
-       copy.sort(comparator);
-       return copy;
-   }
+    /**
+     * Returns all known classes sorted with {@code comparator}
+     * <p>If classes repository is empty or current depth bigger than context depth, starts classes search
+     * 
+     * @param comparator implementation of {@link Comparator}
+     * @return list of all known classes sorted with {@code comparator}
+     */
+    public List<Class<?>> all(Comparator<Class<?>> comparator) {
+         List<Class<?>> copy = all();
+        copy.sort(comparator);
+        return copy;
+    }
     
+    /**
+     * Returns classes annotated by specified {@code annotation}
+     * <p>If classes repository is empty or current depth bigger than context depth, starts classes search
+     * 
+     * @param annotation 
+     * @return list of classes annotated by specified {@code annotation}
+     */
     public List<Class<?>> annotatedBy(Class<? extends Annotation> annotation) {
         if(annotation == null) {
             throw new NullPointerException("Annotation class is null");
@@ -159,6 +229,13 @@ public class Reflex {
         return classes;
     }
     
+    /**
+     * Returns classes which extends specified {@link type}
+     * <p>If classes repository is empty or current depth bigger than context depth, starts classes search
+     * 
+     * @param type parent class
+     * @return list of classes which extends specified {@link type}
+     */
     public List<Class<?>> childs(Class<?> type) {
         if(type == null) {
             throw new NullPointerException("Parent class is null");
@@ -190,6 +267,13 @@ public class Reflex {
         return classes;
     }
     
+    /**
+     * Returns parent class of specified {@code type} or null if it can not be found
+     * <p>If classes repository is empty or current depth bigger than context depth, starts classes search
+     * 
+     * @param type child class
+     * @return parent class of specified {@code type} or null if it can not be found
+     */
     public Class<?> parent(Class<?> type) {
         if(type == null) {
             throw new NullPointerException("Child class is null");
@@ -215,9 +299,15 @@ public class Reflex {
             }
         }
         
-        throw new RuntimeException("Parent of " + type + " is not found...");
+        return null;
     }
     
+    /**
+     * Returns all interfaces known this Reflex
+     * <p>If classes repository is empty or current depth bigger than context depth, starts classes search
+     * 
+     * @return list of all interfaces
+     */
     public List<Class<?>> interfaces() {
         findClasses();
         
@@ -229,6 +319,12 @@ public class Reflex {
         return classes;
     }
     
+    /**
+     * Returns all abstract classes known this Reflex
+     * <p>If classes repository is empty or current depth bigger than context depth, starts classes search
+     * 
+     * @return list of all abstract classes
+     */
     public List<Class<?>> abstractClasses() {
         findClasses();
         
@@ -240,6 +336,17 @@ public class Reflex {
         return classes;
     }
     
+    /**
+     * Locks static context and starts search.
+     * <p>At first step, this method checks necessity of class search.<br>
+     *    If repository depth is null - repository is raw and this instance is first, starts search<br>
+     *    If repository depth is low than depth of this instance - repository is not full, starts search<br>
+     *    otherwise - search ignored, context will be released.
+     * <p>Next step - parsing class path. Class path items - classes directories, dependencies,<br>
+     *    system libraries will be received from class loaders.
+     * <p>Next step - clearing repository and indicies. Then, it starts scanning of each class path item<br>
+     * <p>Final step - releasing locked context
+     */
     public void findClasses() {      
         synchronized(LOCK) {
             if(repositoryDepth == null) {
