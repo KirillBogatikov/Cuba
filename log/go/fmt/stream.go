@@ -2,7 +2,7 @@ package fmt
 
 import (
 	"fmt"
-	"github.com/KirillBogatikov/Cuba/go-log/common"
+	"github.com/KirillBogatikov/Cuba/log/go/common"
 )
 
 type Stream struct {

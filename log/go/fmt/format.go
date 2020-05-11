@@ -3,7 +3,7 @@ package fmt
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/KirillBogatikov/Cuba/go-log/common"
+	"github.com/KirillBogatikov/Cuba/log/go/common"
 )
 
 type Formatter interface {

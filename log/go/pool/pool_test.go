@@ -2,7 +2,7 @@ package pool
 
 import (
 	"fmt"
-	"github.com/KirillBogatikov/Cuba/go-log/common"
+	"github.com/KirillBogatikov/Cuba/log/go/common"
 	"github.com/stfsy/golang-assert"
 	"testing"
 )

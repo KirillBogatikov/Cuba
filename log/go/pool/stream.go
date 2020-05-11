@@ -1,7 +1,7 @@
 package pool
 
 import (
-	"github.com/KirillBogatikov/Cuba/go-log/common"
+	"github.com/KirillBogatikov/Cuba/log/go/common"
 )
 
 type PooledStream struct {

@@ -1,7 +1,7 @@
-package main
+package go_log
 
 import (
-	"github.com/KirillBogatikov/Cuba/go-log/common"
+	"github.com/KirillBogatikov/Cuba/log/go/common"
 	"time"
 )
 
