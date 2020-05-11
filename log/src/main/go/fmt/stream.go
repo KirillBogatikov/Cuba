@@ -20,7 +20,7 @@ func NewStream(formatter *Formatter) Stream {
 	return stream
 }
 
-func (t *Stream) Write(record common.Record) {
+func (t Stream) Write(record common.Record) {
 	text := t.Formatter.Format(record)
 	fmt.Println(text)
 }

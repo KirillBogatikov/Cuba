@@ -12,48 +12,53 @@ type StreamPool interface {
 	Reset()
 }
 
-type item struct {
+type PoolItem struct {
 	priority int
 	stream   common.LogStream
 }
 
 type SimplePool struct {
-	Items    []item
+	Items    []PoolItem
 	position int
 }
 
-func NewSimplePool() SimplePool {
-	return SimplePool{
-		Items:    make([]item, 0),
+func NewSimplePool() *SimplePool {
+	return &SimplePool{
+		Items:    make([]PoolItem, 0),
 		position: 0,
 	}
 }
 
-func (t SimplePool) Next() common.LogStream {
-	t.position += 1
-	if t.HasNext() {
+func (t *SimplePool) Next() common.LogStream {
+	if !t.HasNext() {
 		t.position = 0
 	}
 
-	return t.Items[t.position].stream
+	result := t.Items[t.position].stream
+	t.position += 1
+	return result
 }
 
-func (t SimplePool) HasNext() bool {
-	return t.position >= len(t.Items)
+func (t *SimplePool) HasNext() bool {
+	return t.position < len(t.Items)
 }
 
-func (t SimplePool) Reset() {
+func (t *SimplePool) Reset() {
 	t.position = 0
 }
 
-func (t SimplePool) Subscribe(priority int, stream common.LogStream) error {
+func (t *SimplePool) Subscribe(priority int, stream common.LogStream) error {
+	if stream == nil {
+		return errors.New("LogStream can't be nil")
+	}
+
 	for _, item := range t.Items {
 		if item.stream == stream {
-			return errors.New("Specified LogStream already subsribed")
+			return errors.New("Specified LogStream already subscribed")
 		}
 	}
 
-	t.Items = append(t.Items, item{
+	t.Items = append(t.Items, PoolItem{
 		priority: priority,
 		stream:   stream,
 	})
@@ -62,7 +67,11 @@ func (t SimplePool) Subscribe(priority int, stream common.LogStream) error {
 	return nil
 }
 
-func (t SimplePool) Unsubscribe(stream common.LogStream) error {
+func (t *SimplePool) Unsubscribe(stream common.LogStream) error {
+	if stream == nil {
+		return errors.New("LogStream can't be nil")
+	}
+
 	index := -1
 	for i, item := range t.Items {
 		if item.stream == stream {

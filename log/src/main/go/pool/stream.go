@@ -1,6 +1,8 @@
 package pool
 
-import "cubalog/common"
+import (
+	"cubalog/common"
+)
 
 type PooledStream struct {
 	Subscribers StreamPool
