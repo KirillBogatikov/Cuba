@@ -1,9 +1,9 @@
 package fmt
 
 import (
-	"cubalog/common"
 	"encoding/json"
 	"fmt"
+	"github.com/KirillBogatikov/Test/cubalog/common"
 	"github.com/stfsy/golang-assert"
 	"testing"
 	"time"

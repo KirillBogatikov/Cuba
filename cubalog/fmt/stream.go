@@ -1,8 +1,8 @@
 package fmt
 
 import (
-	"cubalog/common"
 	"fmt"
+	"github.com/KirillBogatikov/Test/cubalog/common"
 )
 
 type Stream struct {

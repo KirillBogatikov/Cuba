@@ -1,8 +1,8 @@
 package pool
 
 import (
-	"cubalog/common"
 	"errors"
+	"github.com/KirillBogatikov/Test/cubalog/common"
 	"sort"
 )
 

@@ -1,7 +1,7 @@
 package pool
 
 import (
-	"cubalog/common"
+	"github.com/KirillBogatikov/Test/cubalog/common"
 )
 
 type PooledStream struct {

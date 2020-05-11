@@ -1,8 +1,8 @@
 package pool
 
 import (
-	"cubalog/common"
 	"fmt"
+	"github.com/KirillBogatikov/Test/cubalog/common"
 	"github.com/stfsy/golang-assert"
 	"testing"
 )

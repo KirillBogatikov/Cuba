@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cubalog/common"
+	"github.com/KirillBogatikov/Test/cubalog/common"
 	"time"
 )
 
