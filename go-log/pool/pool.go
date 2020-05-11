@@ -2,7 +2,7 @@ package pool
 
 import (
 	"errors"
-	"github.com/KirillBogatikov/Test/cubalog/common"
+	"github.com/KirillBogatikov/Cuba/go-log/common"
 	"sort"
 )
 

@@ -1,4 +1,4 @@
-module github.com/KirillBogatikov/Test/cubalog
+module github.com/KirillBogatikov/Cuba
 
 go 1.13
 
